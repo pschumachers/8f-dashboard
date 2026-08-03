@@ -542,6 +542,7 @@ function dlBlob(blob, filename) {
 const PPTX_CDN = "https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js";
 const XLSX_CDN = "https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js";
 const SEV_COLOR = { CRITICAL: "DC2626", HIGH: "D97706", MEDIUM: "2563EB" };
+const COMPANY_BRAND = { name: "Eightfold", color: "7C3AED" };
 async function exportToPPTX(account) {
   await loadScript(PPTX_CDN, "pptx");
   if (!window.PptxGenJS) throw new Error("PptxGenJS library not loaded — check internet connection");
@@ -553,7 +554,7 @@ async function exportToPPTX(account) {
   pptx.defaultFont = { name: 'Calibri', size: 11, color: '1E293B' };
 
   // Brand color
-  const brandColor = (account.brandColor || '1A73E8').toUpperCase();
+  const brandColor = COMPANY_BRAND.color.toUpperCase();
   const brandColorLight = tintColor(brandColor, 0.85);
   const brandColorDark = tintColor(brandColor, -0.3);
 
@@ -649,6 +650,11 @@ async function exportToPPTX(account) {
     fontFace: 'Calibri'
   });
 
+  // Vendor identity
+  slide1.addText('Account Intelligence  \u00b7  Prepared by ' + COMPANY_BRAND.name, {
+    x: 0.5, y: 3.55, w: 12.33, h: 0.35, fontSize: 14, color: 'FFFFFF', align: 'center', fontFace: 'Calibri'
+  });
+
   // Key metrics row
   const metrics = [
     `Revenue: ${account.revenue || 'N/A'}`,
@@ -668,7 +674,7 @@ async function exportToPPTX(account) {
   });
 
   // Footer
-  slide1.addText('PHENOM CONFIDENTIAL', {
+  slide1.addText('EIGHTFOLD CONFIDENTIAL', {
     x: 0.5,
     y: 6.9,
     w: 12.33,
@@ -947,7 +953,7 @@ async function exportToPPTX(account) {
     }
   }
 
-  // ========== SLIDE 4: WHERE PHENOM HAS IMPACT ==========
+  // ========== SLIDE 4: WHERE EIGHTFOLD HAS IMPACT ==========
   const slide4 = pptx.addSlide();
   slide4.background = { color: 'FFFFFF' };
 
@@ -2351,7 +2357,7 @@ async function exportToPPTX(account) {
   });
 
   // Confidential footer
-  slide12.addText('PHENOM CONFIDENTIAL', {
+  slide12.addText('EIGHTFOLD CONFIDENTIAL', {
     x: 0.5,
     y: 6.9,
     w: 12.33,
@@ -3858,7 +3864,7 @@ function IntelUploadCard({ account, update, claudeApiKey }) {
           hyperCellTitle: "Single highest-value Eightfold opportunity for this account — one sentence",
           hyperCellNarrative: "Executive narrative: why this specific Eightfold capability is the #1 priority for this account. Reference their specific workforce data, industry benchmarks, and Eightfold ROI metrics. Include: the business problem, the Eightfold solution, quantified expected impact, and the urgency driver."
         }
-      }) + "\n\nPHENOM DATA/CONTENT:\n" + truncated + "\n\nCRITICAL RULES:\n1. Use REAL Eightfold metrics and benchmarks (e.g. 37% internal hires, 11x internal applications, 50% faster time-to-fill, 3x career site conversions, 62% learning platform increase).\n2. Reference Eightfold product modules by name: Intelligent Talent Experience, CX (Career Site), Hiring Manager, CRM, Fit Score, Talent Marketplace, Workforce Intelligence, AI Agents.\n3. Map challenges to Eightfold ROI data: customers see avg 30-50% reduction in TTF, 2-3x improvement in apply rates, 40%+ increase in internal mobility.\n4. If the content doesn't contain company-specific data, use Eightfold industry benchmarks and frameworks to ENRICH the existing account intel.\n5. For businessChallenges, provide 2-4 challenges. Each must have a Eightfold-specific solution and proof point.\n6. APPEND to existing intelligence, don't replace. Prefix new insights with '[Eightfold Intel]' tag.";
+      }) + "\n\nEIGHTFOLD DATA/CONTENT:\n" + truncated + "\n\nCRITICAL RULES:\n1. Use REAL Eightfold metrics and benchmarks (e.g. 37% internal hires, 11x internal applications, 50% faster time-to-fill, 3x career site conversions, 62% learning platform increase).\n2. Reference Eightfold product modules by name: Intelligent Talent Experience, CX (Career Site), Hiring Manager, CRM, Fit Score, Talent Marketplace, Workforce Intelligence, AI Agents.\n3. Map challenges to Eightfold ROI data: customers see avg 30-50% reduction in TTF, 2-3x improvement in apply rates, 40%+ increase in internal mobility.\n4. If the content doesn't contain company-specific data, use Eightfold industry benchmarks and frameworks to ENRICH the existing account intel.\n5. For businessChallenges, provide 2-4 challenges. Each must have a Eightfold-specific solution and proof point.\n6. APPEND to existing intelligence, don't replace. Prefix new insights with '[Eightfold Intel]' tag.";
 
       const resp = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
@@ -6879,19 +6885,19 @@ function GeoPoliSection({ account, update }) {
     ),
   );
 } // ─── Eightfold Proof Points Database (Industry-Matched Customer Stories) ─────────
-const PHENOM_PROOF_POINTS = [
+const EIGHTFOLD_PROOF_POINTS = [
   { company: "STMicroelectronics", industry: "Semiconductors / Manufacturing", tags: ["Manufacturing","Semiconductors","Technology","Industrial"], headline: "160+ Recruiter Hours Saved in Two Months", metrics: ["160+ recruiter hours saved in the first two months","AI-driven sourcing, matching and screening at scale","Skills-based hiring across a global engineering workforce"], source: "Eightfold Customer Story", url: "https://eightfold.ai/customers/customer-stories/" },
   { company: "NTT DATA", industry: "IT Services / Technology", tags: ["Technology","IT Services","Professional Services","Consulting"], headline: "Doubled Internal Mobility Engagement", metrics: ["More than doubled employee self-nominations","Higher internal referral rates","Skills-based internal mobility and talent marketplace"], source: "Eightfold Customer Story", url: "https://eightfold.ai/customers/customer-stories/" },
   { company: "Softtek", industry: "IT Services / Technology", tags: ["Technology","IT Services","Professional Services"], headline: "30% Faster Time-to-Fill", metrics: ["30% faster time-to-fill","AI matching across a broader talent pool","Reduced manual sourcing effort for recruiters"], source: "Eightfold Customer Story", url: "https://eightfold.ai/customers/customer-stories/" },
   { company: "Global Enterprise Adoption", industry: "Cross-Industry", tags: ["Cross-Industry","Enterprise","Retail","Consumer Goods","Financial Services","Telecommunications","Energy","Automotive"], headline: "Trusted by Global Enterprises", metrics: ["Customers include Vodafone, Bayer, Citi, HSBC, S&P Global, Schneider Electric, Deutsche Telekom, Ericsson, Wipro and Salesforce","Recognition: G2 Enterprise Grid Leader (2025), HR Executive Top HR Product (2025), SAP Pinnacle Award (2023), Fast Company World Changing Ideas (2021)"], source: "Eightfold Customers and Awards", url: "https://eightfold.ai/customers/" },
 ]; // ─── Industry matching logic ─────────────────────────────────────────────────
 function matchProofPoints(accountIndustry) {
-  if (!accountIndustry) return PHENOM_PROOF_POINTS;
+  if (!accountIndustry) return EIGHTFOLD_PROOF_POINTS;
   const terms = accountIndustry
     .toLowerCase()
     .split(/[\s\/,&|]+/)
     .filter(Boolean);
-  const scored = PHENOM_PROOF_POINTS.map((pp) => {
+  const scored = EIGHTFOLD_PROOF_POINTS.map((pp) => {
     const tagStr = pp.tags.join(" ").toLowerCase() + " " + pp.industry.toLowerCase();
     let score = 0;
     terms.forEach((t) => {
