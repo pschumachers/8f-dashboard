@@ -6878,7 +6878,12 @@ function GeoPoliSection({ account, update }) {
     ),
   );
 } // ─── Eightfold Proof Points Database (Industry-Matched Customer Stories) ─────────
-const PHENOM_PROOF_POINTS = []; // ─── Industry matching logic ─────────────────────────────────────────────────
+const PHENOM_PROOF_POINTS = [
+  { company: "STMicroelectronics", industry: "Semiconductors / Manufacturing", tags: ["Manufacturing","Semiconductors","Technology","Industrial"], headline: "160+ Recruiter Hours Saved in Two Months", metrics: ["160+ recruiter hours saved in the first two months","AI-driven sourcing, matching and screening at scale","Skills-based hiring across a global engineering workforce"], source: "Eightfold Customer Story", url: "https://eightfold.ai/customers/customer-stories/" },
+  { company: "NTT DATA", industry: "IT Services / Technology", tags: ["Technology","IT Services","Professional Services","Consulting"], headline: "Doubled Internal Mobility Engagement", metrics: ["More than doubled employee self-nominations","Higher internal referral rates","Skills-based internal mobility and talent marketplace"], source: "Eightfold Customer Story", url: "https://eightfold.ai/customers/customer-stories/" },
+  { company: "Softtek", industry: "IT Services / Technology", tags: ["Technology","IT Services","Professional Services"], headline: "30% Faster Time-to-Fill", metrics: ["30% faster time-to-fill","AI matching across a broader talent pool","Reduced manual sourcing effort for recruiters"], source: "Eightfold Customer Story", url: "https://eightfold.ai/customers/customer-stories/" },
+  { company: "Global Enterprise Adoption", industry: "Cross-Industry", tags: ["Cross-Industry","Enterprise","Retail","Consumer Goods","Financial Services","Telecommunications","Energy","Automotive"], headline: "Trusted by Global Enterprises", metrics: ["Customers include Vodafone, Bayer, Citi, HSBC, S&P Global, Schneider Electric, Deutsche Telekom, Ericsson, Wipro and Salesforce","Recognition: G2 Enterprise Grid Leader (2025), HR Executive Top HR Product (2025), SAP Pinnacle Award (2023), Fast Company World Changing Ideas (2021)"], source: "Eightfold Customers and Awards", url: "https://eightfold.ai/customers/" },
+]; // ─── Industry matching logic ─────────────────────────────────────────────────
 function matchProofPoints(accountIndustry) {
   if (!accountIndustry) return PHENOM_PROOF_POINTS;
   const terms = accountIndustry
@@ -6931,7 +6936,7 @@ function ProofPointsSection({ account, update }) {
         value: account.proofPoint || "",
         onChange: (v) => update("proofPoint", v),
         placeholder:
-          "Add a custom proof point specific to this account \u2014 e.g. 'A leading global insurer deployed Eightfold and saw 13X apply click improvement\u2026'",
+          "Add a custom proof point specific to this account. For example: 'A leading global enterprise deployed Eightfold and more than doubled internal mobility applications.'",
         rows: 3,
       }),
     ),
@@ -7085,18 +7090,18 @@ function ProofPointsSection({ account, update }) {
         /*#__PURE__*/ React.createElement(
           "span",
           { style: { fontWeight: 700, fontSize: 14, color: "#00BFA5" } },
-          "Forrester Total Economic Impact \u2014 Cross-Industry Benchmark",
+          "Eightfold: verified customer results and recognition",
         ),
       ),
       /*#__PURE__*/ React.createElement(
         "div",
         { style: { display: "flex", flexWrap: "wrap", gap: 12 } },
         [
-          { val: "449%", label: "ROI over 3 years" },
-          { val: "<6 mo", label: "Payback period" },
-          { val: "$24M+", label: "Total savings" },
-          { val: "25%", label: "Faster time-to-fill" },
-          { val: "11 hrs", label: "Saved per recruiter/week" },
+          { val: "160+ hrs", label: "Recruiter time saved in 2 months (STMicroelectronics)" },
+          { val: "30%", label: "Faster time-to-fill (Softtek)" },
+          { val: "2×", label: "Employee self-nominations (NTT DATA)" },
+          { val: "G2 Leader", label: "Enterprise, Summer 2025" },
+          { val: "Top HR Product", label: "HR Executive, 2025" },
         ].map((m, i) =>
           /*#__PURE__*/ React.createElement(
             "div",
@@ -9550,7 +9555,7 @@ function ProspectDashboard() {
           body: JSON.stringify({
             model: "claude-sonnet-4-6",
             max_tokens: Math.max(maxTokens || 2000, 12000),
-            system: "You are a sales-intelligence research assistant WITH LIVE WEB SEARCH. Before answering, use web_search to VERIFY every person, job title, leadership change, recent news item, and financial figure — never rely on memory for people or current facts. Only include an executive if a current-year source confirms they are still in that role; if a search shows they have left or you cannot confirm, exclude them or mark them clearly. After researching, output ONLY one valid JSON object as your final message — no commentary around it.",
+            system: "You are a sales-intelligence researcher for Eightfold, which sells an AI-native talent intelligence platform, and you have live web search. Follow these rules strictly. (1) COMPANY FOCUS: every field must describe how Eightfold's own product (an AI-native talent intelligence platform) helps THIS specific prospect. Frame all value strictly in terms of Eightfold's real capabilities. Do not borrow terminology, use cases, or metrics from other vendor categories, and do not invent capabilities Eightfold does not offer. (2) VERIFY: use web_search to confirm every person, job title, leadership change, news item and figure before you write it, and exclude anyone you cannot confirm is currently in that exact role this year. (3) STYLE: write each description as clear, well-structured prose in full sentences and short paragraphs, using a blank line between separate ideas. Never use the em dash character anywhere in your output; use commas, colons, or full stops instead. (4) COMPLETE: fill EVERY field in the requested JSON with specific, substantive content grounded in this prospect, and never leave brackets, template markers, or values like X percent. Output ONLY the final JSON object.",
             messages: [{ role: "user", content: prompt }],
             tools: [{ type: "web_search_20250305", name: "web_search", max_uses: 5 }]
           })
