@@ -1471,7 +1471,7 @@ async function exportToPPTX(account) {
     fontFace: 'Calibri'
   });
 
-  const phenomSteps = ['Job in Eightfold', 'Job Matching', 'Smart Apply', 'AI Screening', 'Routing', 'Interview Insights'];
+  const phenomSteps = ['Job in Eightfold', 'AI Matching', 'Candidate Agent', 'AI Screening', 'AI Interviewer', 'Talent Insights'];
   const phenomStepX = [0.7, 1.8, 2.9, 4.0, 5.1, 6.2];
 
   phenomSteps.forEach((step, idx) => {
@@ -1729,10 +1729,10 @@ async function exportToPPTX(account) {
   });
 
   const enhancements = [
-    { title: 'Smart Matching', desc: 'AI ranks candidates by skill-fit & cultural alignment' },
-    { title: 'Interview Insights', desc: 'Real-time feedback during interviews with AI notes' },
-    { title: 'Pipeline Nurturing', desc: 'Engage passive candidates over months/years' },
-    { title: 'Offer Analytics', desc: 'Predict acceptance rates and optimize packages' }
+    { title: 'AI Matching', desc: 'Deep-learning skills match ranks candidates by capability & potential' },
+    { title: 'AI Interview Companion', desc: 'Real-time interview guidance and AI-generated notes' },
+    { title: 'Candidate Nurturing', desc: 'Engage passive candidates over months/years via candidate relationship management' },
+    { title: 'Talent Insights', desc: 'Skills-based analytics on pipeline, quality and workforce readiness' }
   ];
 
   enhancements.forEach((enh, idx) => {
@@ -3882,7 +3882,7 @@ function IntelUploadCard({ account, update, claudeApiKey }) {
       const prompt = "You are an elite workforce intelligence analyst specialising in Eightfold's talent experience platform. You have been given content from Eightfold's Workforce Intelligence portal or related Eightfold data about or relevant to \"" + companyName + "\".\n\nEXISTING ACCOUNT INTEL:\n- Industry: " + (account.industry || "unknown") + "\n- Workforce data: " + (existingWorkforce || "none yet") + "\n- Problems identified: " + (existingProblems || "none yet") + "\n\nAnalyse the Eightfold content below and extract intelligence mapped to these EXACT sections. Use Eightfold-specific terminology and metrics. Return ONLY valid JSON:\n\n" + JSON.stringify({
         workforceIntelligence: {
           workforceScale: "Workforce scale insights from Eightfold data: headcount trends, skills gaps identified, workforce readiness scores, AI/automation maturity level, internal mobility rates",
-          hiringShape: "Hiring shape from Eightfold lens: apply-to-hire ratios, candidate pipeline health, sourcing channel effectiveness, career site conversion, chatbot engagement rates",
+          hiringShape: "Hiring shape from Eightfold lens: apply-to-hire ratios, candidate pipeline health, sourcing channel effectiveness, candidate experience conversion, AI matching quality and Candidate Agent engagement rates",
           criticalRoles: "Critical roles identified via Eightfold skills intelligence: hardest-to-fill roles, skills gaps, emerging role families, succession planning gaps, skills adjacencies",
           geoPatterns: "Geographic hiring patterns from Eightfold data: regional talent density, remote work patterns, global talent marketplace utilisation, geo-specific skills availability",
           talentPressure: "Talent pressure indicators: employer brand score, candidate experience benchmarks, competitor talent flows, Glassdoor/Indeed sentiment, internal vs external hire ratios"
@@ -3894,18 +3894,18 @@ function IntelUploadCard({ account, update, claudeApiKey }) {
           whyNow: "Why-now triggers from Eightfold intelligence: skills obsolescence acceleration (AI/automation disrupting 40% of roles by 2027), competitor talent intelligence platform adoption, workforce planning gap (18-month lag between strategy and HR execution), regulatory skills requirements"
         },
         useCaseMapping: {
-          workflowAssessment: "Current state vs Eightfold-enabled state: manual sourcing vs AI matching, reactive hiring vs proactive pipeline, no internal marketplace vs skills-based talent marketplace, basic career site vs personalised talent experience",
-          highestOpportunity: "Highest-impact Eightfold use case for this account based on their specific workforce challenges. Map to Eightfold modules: Intelligent Talent Experience, High-Volume Hiring, Employee Experience, Workforce Intelligence",
-          capabilityMatch: "Eightfold capability-to-pain mapping: CX (career site AI) -> apply rate; Hiring Manager -> time-to-fill; CRM -> pipeline; Talent Marketplace -> internal mobility; Workforce Intelligence -> skills planning; AI Agents -> screening automation"
+          workflowAssessment: "Current state vs Eightfold-enabled state: manual sourcing vs AI matching, reactive hiring vs proactive pipeline, no internal marketplace vs skills-based Talent Marketplace, generic candidate experience vs AI-personalised talent experience",
+          highestOpportunity: "Highest-impact Eightfold use case for this account based on their specific workforce challenges. Map to Eightfold capabilities: Talent Acquisition, Talent Management, Resource Management, Workforce Exchange, Talent Insights",
+          capabilityMatch: "Eightfold capability-to-pain mapping: Talent Acquisition (AI matching + Candidate Agent) -> time-to-fill; candidate relationship management -> pipeline; Talent Management (internal mobility + Talent Marketplace) -> internal mobility; Talent Insights -> skills-based workforce planning; Talent Agents (AI Interviewer + AI screening) -> screening automation; Resource Management -> project/resource staffing"
         },
         businessChallenges: [
-          { severity: "CRITICAL or HIGH or MEDIUM", title: "Challenge title from Eightfold analysis", businessChallenge: "Specific challenge with Eightfold workforce data and benchmarks", solution: "Eightfold solution module and expected outcome with metrics (e.g. 37% increase in internal hires, 50% reduction in time-to-fill, 3x career site conversion)", proofPoint: "Eightfold customer proof point (e.g. Eightfold customers average 37% internal hire rate vs 15% industry benchmark)" }
+          { severity: "CRITICAL or HIGH or MEDIUM", title: "Challenge title from Eightfold analysis", businessChallenge: "Specific challenge with Eightfold workforce data and benchmarks", solution: "Eightfold capability and expected outcome with metrics (e.g. 30% faster time-to-fill, 160+ recruiter hours saved in two months, more than doubled internal mobility engagement)", proofPoint: "Eightfold customer proof point (e.g. Softtek achieved 30% faster time-to-fill; STMicroelectronics saved 160+ recruiter hours in two months; NTT DATA more than doubled employee self-nominations)" }
         ],
         hyperCell: {
           hyperCellTitle: "Single highest-value Eightfold opportunity for this account — one sentence",
           hyperCellNarrative: "Executive narrative: why this specific Eightfold capability is the #1 priority for this account. Reference their specific workforce data, industry benchmarks, and Eightfold ROI metrics. Include: the business problem, the Eightfold solution, quantified expected impact, and the urgency driver."
         }
-      }) + "\n\nEIGHTFOLD DATA/CONTENT:\n" + truncated + "\n\nCRITICAL RULES:\n1. Use REAL Eightfold metrics and benchmarks (e.g. 37% internal hires, 11x internal applications, 50% faster time-to-fill, 3x career site conversions, 62% learning platform increase).\n2. Reference Eightfold product modules by name: Intelligent Talent Experience, CX (Career Site), Hiring Manager, CRM, Fit Score, Talent Marketplace, Workforce Intelligence, AI Agents.\n3. Map challenges to Eightfold ROI data: customers see avg 30-50% reduction in TTF, 2-3x improvement in apply rates, 40%+ increase in internal mobility.\n4. If the content doesn't contain company-specific data, use Eightfold industry benchmarks and frameworks to ENRICH the existing account intel.\n5. For businessChallenges, provide 2-4 challenges. Each must have a Eightfold-specific solution and proof point.\n6. APPEND to existing intelligence, don't replace. Prefix new insights with '[Eightfold Intel]' tag.";
+      }) + "\n\nEIGHTFOLD DATA/CONTENT:\n" + truncated + "\n\nCRITICAL RULES:\n1. Use REAL Eightfold proof points (e.g. Softtek 30% faster time-to-fill; STMicroelectronics 160+ recruiter hours saved in two months; NTT DATA more than doubled employee self-nominations) and platform scale (deep-learning skills graph of 1.4M+ skills and billions of talent profiles across 145+ countries).\n2. Reference Eightfold products/capabilities by name: the Talent Intelligence Platform, Talent Acquisition, Talent Management, Resource Management, Workforce Exchange, Talent Insights, Talent Agents (AI Interviewer, AI Interview Companion, Candidate Agent), and Talent Marketplace.\n3. Map challenges to Eightfold outcomes: customers see faster time-to-fill, sharply reduced manual sourcing effort, and materially higher internal mobility engagement.\n4. If the content doesn't contain company-specific data, use Eightfold industry benchmarks and frameworks to ENRICH the existing account intel.\n5. For businessChallenges, provide 2-4 challenges. Each must have a Eightfold-specific solution and proof point.\n6. APPEND to existing intelligence, don't replace. Prefix new insights with '[Eightfold Intel]' tag.";
 
       const resp = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
@@ -4768,14 +4768,14 @@ function IntelUploadCard({ account, update, claudeApiKey }) {
     ), // end gong tab
     // ── Eightfold tab ──
     activeIntelTab === "phenom" && /*#__PURE__*/ React.createElement("div", null,
-        /*#__PURE__*/ React.createElement("div", { style: { fontSize: 12, color: C.muted, marginBottom: 10 } }, "Import workforce intelligence from Eightfold\u2019s platform to enrich Workforce, Problems, Use Cases, Challenges, and Hyper-Cell sections. Paste content from workforce-intelligence.phenompro.com, upload a report, or use a link."),
+        /*#__PURE__*/ React.createElement("div", { style: { fontSize: 12, color: C.muted, marginBottom: 10 } }, "Import workforce intelligence from Eightfold\u2019s platform to enrich Workforce, Problems, Use Cases, Challenges, and Hyper-Cell sections. Paste content from Eightfold Talent Insights (eightfold.ai), upload a report, or use a link."),
         // Eightfold link input
         /*#__PURE__*/ React.createElement("div", { style: { display: "flex", gap: 6, marginBottom: 8 } },
           /*#__PURE__*/ React.createElement("input", {
             value: phenomLink,
             onChange: (e) => setEightfoldLink(e.target.value),
             onKeyDown: (e) => { if (e.key === "Enter" && phenomLink.trim() && !processingEightfold) processEightfoldLink(); },
-            placeholder: "Paste Eightfold URL (e.g. workforce-intelligence.phenompro.com)...",
+            placeholder: "Paste Eightfold URL (e.g. eightfold.ai/talent-insights)...",
             disabled: processingEightfold,
             style: { flex: 1, padding: "7px 10px", border: "1px solid " + C.border, borderRadius: 6, background: C.card, color: C.text, fontSize: 11, outline: "none" },
           }),
@@ -4802,7 +4802,7 @@ function IntelUploadCard({ account, update, claudeApiKey }) {
         /*#__PURE__*/ React.createElement("textarea", {
           value: phenomText,
           onChange: (e) => setEightfoldText(e.target.value),
-          placeholder: "Or paste Eightfold workforce intelligence content here...\n\nTip: Go to workforce-intelligence.phenompro.com, select the relevant company or industry report, copy the content and paste it here. You can also paste Skills Intelligence data, Talent Marketplace reports, or Workforce Readiness assessments.",
+          placeholder: "Or paste Eightfold workforce intelligence content here...\n\nTip: Go to Eightfold Talent Insights (eightfold.ai), select the relevant company or industry report, copy the content and paste it here. You can also paste skills intelligence data, Talent Marketplace reports, or workforce readiness assessments.",
           disabled: processingEightfold,
           rows: 5,
           style: { width: "100%", padding: "8px 10px", border: "1px solid " + C.border, borderRadius: 6, background: C.card, color: C.text, fontSize: 11, fontFamily: "inherit", resize: "vertical", outline: "none", boxSizing: "border-box", marginBottom: 8 },
@@ -4816,7 +4816,7 @@ function IntelUploadCard({ account, update, claudeApiKey }) {
         /*#__PURE__*/ React.createElement("div", { style: { marginTop: 8, paddingTop: 8, borderTop: "1px dashed " + C.border } },
           /*#__PURE__*/ React.createElement("div", { style: { fontSize: 10, color: C.muted, marginBottom: 6 } }, "No Eightfold data to paste? Use AI to enrich sections with Eightfold frameworks and benchmarks based on your existing account intelligence:"),
           /*#__PURE__*/ React.createElement("button", {
-            onClick: () => processEightfoldContent("Use Eightfold workforce intelligence frameworks, benchmarks, and product capabilities to enrich the account intelligence for " + (account.companyName || "this company") + " in the " + (account.industry || "unknown") + " industry. Apply Eightfold-specific metrics: skills intelligence gaps, internal mobility rates (benchmark: 37% internal hires), talent marketplace adoption, AI screening agent impact (50%+ TTF reduction), career site conversion (3x improvement), workforce readiness scoring, and Eightfold customer proof points. Use industry-specific Eightfold ROI data and deployment patterns.", "AI-enriched Eightfold analysis"),
+            onClick: () => processEightfoldContent("Use Eightfold workforce intelligence frameworks, benchmarks, and product capabilities to enrich the account intelligence for " + (account.companyName || "this company") + " in the " + (account.industry || "unknown") + " industry. Apply Eightfold-specific capabilities and proof points: deep-learning skills intelligence (1.4M+ skills), internal mobility via Talent Marketplace (NTT DATA more than doubled employee self-nominations), AI matching and screening via Talent Acquisition and Talent Agents (Softtek 30% faster time-to-fill; STMicroelectronics 160+ recruiter hours saved in two months), and skills-based workforce planning via Talent Insights. Use industry-specific Eightfold ROI data and deployment patterns.", "AI-enriched Eightfold analysis"),
             disabled: processingEightfold,
             style: { width: "100%", padding: "8px 12px", borderRadius: 6, border: "1px solid #0D9488", cursor: processingEightfold ? "wait" : "pointer", background: "transparent", color: "#0D9488", fontSize: 11, fontWeight: 600, fontFamily: "inherit" },
           }, processingEightfold ? "\u23F3 Enriching..." : "\u2728 Auto-Enrich with Eightfold Frameworks (no paste needed)"),
@@ -5539,7 +5539,7 @@ function WorkforceSection({ account, update, claudeApiKey }) {
     setEnriching(true); setEnrichStatus("Enriching workforce intelligence with Eightfold frameworks...");
     try {
       const existing = { workforceScale: account.workforceScale || "", hiringShape: account.hiringShape || "", criticalRoles: account.criticalRoles || "", geoPatterns: account.geoPatterns || "", talentPressure: account.talentPressure || "" };
-      const prompt = "You are a Eightfold workforce intelligence analyst. For \"" + (account.companyName || "this company") + "\" (industry: " + (account.industry || "unknown") + ", employees: " + (account.employees || "unknown") + "), enrich these workforce fields using Eightfold's frameworks, benchmarks and public data. EXISTING DATA:\n" + JSON.stringify(existing) + "\n\nReturn ONLY valid JSON with the SAME keys. For each field, APPEND new Eightfold-sourced insights (prefixed with [Eightfold Intel]) to the existing text. Use real Eightfold metrics: skills intelligence gaps, internal mobility benchmarks (37% internal hires), talent marketplace adoption rates, AI readiness scores (83% of orgs have low AI maturity), workforce readiness frameworks, and industry-specific talent data. If existing data is empty, provide fresh Eightfold-lens analysis.";
+      const prompt = "You are a Eightfold workforce intelligence analyst. For \"" + (account.companyName || "this company") + "\" (industry: " + (account.industry || "unknown") + ", employees: " + (account.employees || "unknown") + "), enrich these workforce fields using Eightfold's frameworks, benchmarks and public data. EXISTING DATA:\n" + JSON.stringify(existing) + "\n\nReturn ONLY valid JSON with the SAME keys. For each field, APPEND new Eightfold-sourced insights (prefixed with [Eightfold Intel]) to the existing text. Use real Eightfold signals: deep-learning skills intelligence (1.4M+ skills), internal mobility via Talent Marketplace, AI matching quality, workforce readiness frameworks, and industry-specific talent data. If existing data is empty, provide fresh Eightfold-lens analysis.";
       const resp = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
         headers: { "Content-Type": "application/json", "x-api-key": claudeApiKey, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
@@ -6265,7 +6265,7 @@ function ProblemIdentificationSection({ account, update, claudeApiKey }) {
     setEnriching(true); setEnrichStatus("Enriching problems with Eightfold analysis...");
     try {
       const existing = { cioProblems: account.cioProblems || "", chroProblems: account.chroProblems || "", businessPain: account.businessPain || "", whyNow: account.whyNow || "", problemHypothesis: account.problemHypothesis || "" };
-      const prompt = "You are a Eightfold sales strategist. For \"" + (account.companyName || "this company") + "\" (industry: " + (account.industry || "unknown") + ", employees: " + (account.employees || "unknown") + "), enrich problem identification using Eightfold intelligence and public data. EXISTING DATA:\n" + JSON.stringify(existing) + "\n\nReturn ONLY valid JSON with same keys. APPEND [Eightfold Intel] insights. Use Eightfold proof points: 83% of orgs have low AI/automation maturity, 18-month lag between strategy-HR execution, average TTF 42 days, skills taxonomy gaps, internal mobility below 15% industry average vs Eightfold 37% benchmark. Surface CIO problems (fragmented HR tech, no AI skills matching), CHRO problems (workforce planning gaps, retention, employer brand), business pain (cost-per-hire, unfilled roles revenue impact), and why-now triggers (AI disruption, skills obsolescence, competitor platform adoption).";
+      const prompt = "You are a Eightfold sales strategist. For \"" + (account.companyName || "this company") + "\" (industry: " + (account.industry || "unknown") + ", employees: " + (account.employees || "unknown") + "), enrich problem identification using Eightfold intelligence and public data. EXISTING DATA:\n" + JSON.stringify(existing) + "\n\nReturn ONLY valid JSON with same keys. APPEND [Eightfold Intel] insights. Use Eightfold proof points and industry framing: enterprises struggle with fragmented HR tech and low AI/automation maturity, long lags between workforce strategy and HR execution, elevated time-to-fill, and skills taxonomy gaps; Eightfold customers such as Softtek (30% faster time-to-fill), STMicroelectronics (160+ recruiter hours saved in two months) and NTT DATA (more than doubled employee self-nominations) demonstrate the upside of a deep-learning skills graph. Surface CIO problems (fragmented HR tech, no AI skills matching), CHRO problems (workforce planning gaps, retention, employer brand), business pain (cost-per-hire, unfilled roles revenue impact), and why-now triggers (AI disruption, skills obsolescence, competitor platform adoption).";
       const resp = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
         headers: { "Content-Type": "application/json", "x-api-key": claudeApiKey, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
@@ -6365,7 +6365,7 @@ function UseCaseMappingSection({ account, update, claudeApiKey }) {
     setEnriching(true); setEnrichStatus("Mapping Eightfold use cases...");
     try {
       const existing = { workflowAssessment: account.workflowAssessment || "", highestOpportunity: account.highestOpportunity || "", capabilityMatch: account.capabilityMatch || "", proofPoints: account.proofPoints || "", personaValueMap: account.personaValueMap || "" };
-      const prompt = "You are a Eightfold solution architect. For \"" + (account.companyName || "this company") + "\" (industry: " + (account.industry || "unknown") + ", employees: " + (account.employees || "unknown") + "), map Eightfold use cases. EXISTING DATA:\n" + JSON.stringify(existing) + "\n\nReturn ONLY valid JSON with same keys. APPEND [Eightfold Intel] insights. Map Eightfold capabilities: Intelligent Talent Experience (CX career site, chatbot, personalisation), Hiring Manager (interview scheduling, collaboration), CRM (proactive pipeline), Fit Score (AI matching), Talent Marketplace (internal mobility, gigs, mentoring), Workforce Intelligence (skills gaps, succession), AI Agents (screening, sourcing, onboarding). Use proof points: 37% internal hires, 11x internal applications, 50% TTF reduction, 3x career site conversion, 62% learning engagement increase. Map persona value: CHRO (strategic workforce planning), CFO (cost-per-hire reduction, headcount avoidance), CIO (platform consolidation, AI), TA Leader (pipeline, automation), HM (time-to-fill, quality).";
+      const prompt = "You are a Eightfold solution architect. For \"" + (account.companyName || "this company") + "\" (industry: " + (account.industry || "unknown") + ", employees: " + (account.employees || "unknown") + "), map Eightfold use cases. EXISTING DATA:\n" + JSON.stringify(existing) + "\n\nReturn ONLY valid JSON with same keys. APPEND [Eightfold Intel] insights. Map Eightfold capabilities: Talent Acquisition (AI sourcing, matching, screening, candidate relationship management), Talent Agents (AI Interviewer, AI Interview Companion, Candidate Agent), Talent Management (internal mobility, Talent Marketplace, Career Planner, upskilling/reskilling, succession planning, skills mentoring), Resource Management (project and resource staffing), Workforce Exchange, Talent Insights (skills-based workforce planning and analytics). Use proof points: Softtek 30% faster time-to-fill, STMicroelectronics 160+ recruiter hours saved in two months, NTT DATA more than doubled employee self-nominations, deep-learning skills graph of 1.4M+ skills across 145+ countries. Map persona value: CHRO (strategic workforce planning), CFO (cost-per-hire reduction, headcount avoidance), CIO (platform consolidation, AI), TA Leader (pipeline, automation), HM (time-to-fill, quality).";
       const resp = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
         headers: { "Content-Type": "application/json", "x-api-key": claudeApiKey, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
@@ -6455,7 +6455,7 @@ function BusinessChallengesSection({ account, update, claudeApiKey }) {
     setEnriching(true); setEnrichStatus("Generating Eightfold-mapped challenges...");
     try {
       const existingTitles = (account.challenges || []).map(c => c.title || "").join(", ");
-      const prompt = "You are a Eightfold sales strategist. For \"" + (account.companyName || "this company") + "\" (industry: " + (account.industry || "unknown") + ", employees: " + (account.employees || "unknown") + "), generate 3-4 NEW business challenges with Eightfold solutions. EXISTING CHALLENGE TITLES (do not duplicate): " + (existingTitles || "none") + "\n\nReturn ONLY valid JSON: { \"challenges\": [{ \"severity\": \"CRITICAL/HIGH/MEDIUM\", \"title\": \"Challenge title\", \"businessChallenge\": \"Specific challenge with data\", \"solution\": \"Eightfold solution with expected metrics\", \"proofPoint\": \"Eightfold customer proof point\" }] }\n\nUse Eightfold ROI data: 37% internal hires, 50% TTF reduction, 3x career site conversion, 11x internal applications, 62% learning engagement, AI agents screening 80%+ of applicants. Map to Eightfold modules: CX, Hiring Manager, CRM, Talent Marketplace, Workforce Intelligence, AI Agents, Fit Score.";
+      const prompt = "You are a Eightfold sales strategist. For \"" + (account.companyName || "this company") + "\" (industry: " + (account.industry || "unknown") + ", employees: " + (account.employees || "unknown") + "), generate 3-4 NEW business challenges with Eightfold solutions. EXISTING CHALLENGE TITLES (do not duplicate): " + (existingTitles || "none") + "\n\nReturn ONLY valid JSON: { \"challenges\": [{ \"severity\": \"CRITICAL/HIGH/MEDIUM\", \"title\": \"Challenge title\", \"businessChallenge\": \"Specific challenge with data\", \"solution\": \"Eightfold solution with expected metrics\", \"proofPoint\": \"Eightfold customer proof point\" }] }\n\nUse Eightfold proof points: Softtek 30% faster time-to-fill, STMicroelectronics 160+ recruiter hours saved in two months, NTT DATA more than doubled employee self-nominations. Map to Eightfold capabilities: Talent Acquisition, Talent Agents, Talent Management, Talent Marketplace, Resource Management, Workforce Exchange, Talent Insights.";
       const resp = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
         headers: { "Content-Type": "application/json", "x-api-key": claudeApiKey, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
@@ -6705,7 +6705,7 @@ function HyperCellSection({ account, update, claudeApiKey }) {
     setEnriching(true); setEnrichStatus("Identifying Eightfold hyper-cell opportunity...");
     try {
       const context = { companyName: account.companyName || "", industry: account.industry || "", employees: account.employees || "", workforceScale: safeStr(account.workforceScale).substring(0, 500), criticalRoles: safeStr(account.criticalRoles).substring(0, 300), businessPain: safeStr(account.businessPain).substring(0, 300), whyNow: safeStr(account.whyNow).substring(0, 300), existingTitle: account.hyperCellTitle || "", existingNarrative: safeStr(account.hyperCellNarrative).substring(0, 500) };
-      const prompt = "You are a Eightfold strategic sales advisor. For \"" + context.companyName + "\", identify THE single highest-value Eightfold opportunity — the executive-level entry point. CONTEXT:\n" + JSON.stringify(context) + "\n\nReturn ONLY valid JSON:\n{\"hyperCellTitle\": \"One-sentence Eightfold opportunity title\", \"hyperCellNarrative\": \"3-4 paragraph executive narrative: business context, urgency driver, specific Eightfold solution (name the module), quantified expected impact (use real Eightfold proof points), competitive urgency, and the executive ask. This must be compelling enough for a C-suite conversation.\"}\n\nUse real Eightfold data: 37% internal hires, 50% TTF reduction, 3x career site conversion, 11x internal mobility, AI Agents screening 80%+ candidates, Talent Marketplace reducing external hiring costs 20-30%, Workforce Intelligence enabling skills-based planning 18 months ahead. Reference the specific Eightfold module that maps to their #1 pain.";
+      const prompt = "You are a Eightfold strategic sales advisor. For \"" + context.companyName + "\", identify THE single highest-value Eightfold opportunity — the executive-level entry point. CONTEXT:\n" + JSON.stringify(context) + "\n\nReturn ONLY valid JSON:\n{\"hyperCellTitle\": \"One-sentence Eightfold opportunity title\", \"hyperCellNarrative\": \"3-4 paragraph executive narrative: business context, urgency driver, specific Eightfold solution (name the module), quantified expected impact (use real Eightfold proof points), competitive urgency, and the executive ask. This must be compelling enough for a C-suite conversation.\"}\n\nUse real Eightfold proof points: Softtek 30% faster time-to-fill, STMicroelectronics 160+ recruiter hours saved in two months, NTT DATA more than doubled employee self-nominations, a deep-learning skills graph of 1.4M+ skills and billions of talent profiles across 145+ countries, Talent Marketplace driving internal mobility, and Talent Insights enabling skills-based workforce planning. Reference the specific Eightfold capability (Talent Acquisition, Talent Management, Resource Management, Workforce Exchange, or Talent Insights) that maps to their #1 pain.";
       const resp = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
         headers: { "Content-Type": "application/json", "x-api-key": claudeApiKey, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
@@ -6943,7 +6943,7 @@ function matchProofPoints(accountIndustry) {
     let score = 0;
     terms.forEach((t) => {
       if (tagStr.includes(t)) score += 2;
-    }); // Forrester TEI always relevant
+    }); // cross-industry enterprise adoption always relevant
     if (pp.tags.includes("All Industries")) score += 1;
     return { ...pp, score };
   });
@@ -9717,7 +9717,7 @@ function ProspectDashboard() {
   "problemHypothesis": "Problem hypothesis connecting company challenges to talent intelligence platform solution",
   "workflowAssessment": "Current HR tech stack (ATS, HCM, LMS) and gaps",
   "hrTechStack": "CRITICAL: ONLY include tools that are PUBLICLY CONFIRMED (press releases, job postings mentioning specific tools, vendor case studies, annual reports). Return EMPTY ARRAY [] if not confirmed. DO NOT GUESS. Format: [{category: ats/hcm/lms/perf/payroll/wfm/analytics/engagement, name: Exact vendor name, notes: Source of confirmation}]",
-  "highestOpportunity": "Highest-impact capability: internal mobility, AI matching, career site, sourcing",
+  "highestOpportunity": "Highest-impact capability: internal mobility, AI matching, candidate experience, sourcing, skills-based workforce planning",
   "capabilityMatch": "Which platform capabilities map to which business needs",
   "proofPoints": "Relevant proof points or similar company case studies",
   "personaValueMap": "Value proposition per persona: CHRO, CIO, CFO, hiring managers",
