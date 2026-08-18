@@ -478,20 +478,97 @@ function LoginPage({ onLogin }) {
     ),
   );
 } // ─── App Wrapper with Auth State ─────────────────────────────────────────────
+async function totpHmacSha1(keyBytes, msgBytes) {
+  var k = await crypto.subtle.importKey("raw", keyBytes, { name: "HMAC", hash: { name: "SHA-1" } }, false, ["sign"]);
+  var sig = await crypto.subtle.sign("HMAC", k, msgBytes);
+  return new Uint8Array(sig);
+}
+function totpB32decode(s) {
+  s = String(s || "").replace(/=+$/, "").replace(/\s/g, "").toUpperCase();
+  var alph = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567", bits = 0, val = 0, out = [];
+  for (var i = 0; i < s.length; i++) { var idx = alph.indexOf(s.charAt(i)); if (idx < 0) continue; val = (val << 5) | idx; bits += 5; if (bits >= 8) { out.push((val >>> (bits - 8)) & 255); bits -= 8; } }
+  return new Uint8Array(out);
+}
+function totpB32encode(bytes) {
+  var alph = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567", bits = 0, val = 0, out = "";
+  for (var i = 0; i < bytes.length; i++) { val = (val << 8) | bytes[i]; bits += 8; while (bits >= 5) { out += alph.charAt((val >>> (bits - 5)) & 31); bits -= 5; } }
+  if (bits > 0) out += alph.charAt((val << (5 - bits)) & 31);
+  return out;
+}
+async function totpAt(secretB32, counter) {
+  var key = totpB32decode(secretB32), msg = new Uint8Array(8), c = counter;
+  for (var i = 7; i >= 0; i--) { msg[i] = c & 255; c = Math.floor(c / 256); }
+  var h = await totpHmacSha1(key, msg), off = h[19] & 15;
+  var bin = ((h[off] & 127) << 24) | ((h[off + 1] & 255) << 16) | ((h[off + 2] & 255) << 8) | (h[off + 3] & 255);
+  var code = String(bin % 1000000); while (code.length < 6) code = "0" + code; return code;
+}
+async function totpVerify(secretB32, input) {
+  input = String(input || "").trim(); if (!/^[0-9]{6}$/.test(input)) return false;
+  var step = Math.floor(Date.now() / 30000);
+  for (var w = -1; w <= 1; w++) { try { if ((await totpAt(secretB32, step + w)) === input) return true; } catch (e) {} }
+  return false;
+}
+function totpRandomSecret() { var b = new Uint8Array(20); crypto.getRandomValues(b); return totpB32encode(b); }
+function totpOtpauthUrl(secretB32, email) { return "otpauth://totp/JAGGAER%20Dashboard:" + encodeURIComponent(email || "user") + "?secret=" + secretB32 + "&issuer=JAGGAER%20Dashboard&algorithm=SHA1&digits=6&period=30"; }
+
+function TotpGate({ secret, onPass, onSignOut }) {
+  var _c = useState(""); var code = _c[0]; var setCode = _c[1];
+  var _e = useState(""); var err = _e[0]; var setErr = _e[1];
+  var _l = useState(false); var loading = _l[0]; var setLoading = _l[1];
+  async function submit(e) {
+    if (e) e.preventDefault();
+    setErr("");
+    if (!/^[0-9]{6}$/.test((code || "").trim())) { setErr("Enter the 6 digit code."); return; }
+    setLoading(true);
+    var ok = false; try { ok = await totpVerify(secret, code.trim()); } catch (x) { ok = false; }
+    setLoading(false);
+    if (ok) { onPass(); } else { setErr("That code is not right. Enter the current code from your authenticator app."); }
+  }
+  return React.createElement("div", { style: { minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #0F172A 100%)", padding: 20, fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" } },
+    React.createElement("div", { style: { width: "100%", maxWidth: 380, background: "#fff", borderRadius: 16, padding: "36px 30px", boxShadow: "0 20px 60px rgba(0,0,0,0.3)" } },
+      React.createElement("div", { style: { textAlign: "center", marginBottom: 22 } },
+        React.createElement("div", { style: { width: 52, height: 52, borderRadius: 14, background: "linear-gradient(135deg, #00BFA5, #0D9488)", display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: 24, color: "#fff", marginBottom: 14 } }, "🔐"),
+        React.createElement("h1", { style: { margin: 0, fontSize: 20, fontWeight: 700, color: "#1E293B" } }, "Two factor"),
+        React.createElement("p", { style: { margin: "6px 0 0", fontSize: 14, color: "#64748B", lineHeight: 1.5 } }, "Enter the current 6 digit code from your authenticator app.")
+      ),
+      err && React.createElement("div", { style: { background: "#FEF2F2", border: "1px solid #FECACA", borderRadius: 8, padding: "10px 14px", marginBottom: 14, fontSize: 13, color: "#DC2626" } }, err),
+      React.createElement("form", { onSubmit: submit },
+        React.createElement("input", { type: "text", inputMode: "numeric", maxLength: 6, autoFocus: true, value: code, onChange: function (e) { setCode(e.target.value.replace(/[^0-9]/g, "")); }, placeholder: "000000", style: { width: "100%", padding: "12px 14px", border: "1px solid #E5E7EB", borderRadius: 8, fontSize: 22, letterSpacing: 8, textAlign: "center", fontFamily: "inherit", boxSizing: "border-box", outline: "none", marginBottom: 14 } }),
+        React.createElement("button", { type: "submit", disabled: loading, style: { width: "100%", padding: "12px", borderRadius: 8, border: "none", background: loading ? "#9CA3AF" : "linear-gradient(135deg, #00BFA5, #0D9488)", color: "#fff", fontSize: 15, fontWeight: 700, cursor: loading ? "not-allowed" : "pointer", fontFamily: "inherit" } }, loading ? "Checking…" : "Verify"),
+        React.createElement("button", { type: "button", onClick: onSignOut, style: { width: "100%", padding: "10px", marginTop: 10, borderRadius: 8, border: "none", background: "none", color: "#64748B", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" } }, "Sign out")
+      )
+    )
+  );
+}
+
 function App() {
   const [user, setUser] = useState(firebaseAvailable ? null : { email: "local" });
   const [authChecked, setAuthChecked] = useState(!firebaseAvailable);
+  const [totpChecked, setTotpChecked] = useState(false);
+  const [totpSecret, setTotpSecret] = useState("");
+  const [totpPassed, setTotpPassed] = useState(false);
   useEffect(() => {
     if (!firebaseAvailable || !auth) {
       setAuthChecked(true);
       return;
     }
     const unsubscribe = auth.onAuthStateChanged((u) => {
+      if (!u && typeof window !== "undefined") window.__totpVerified = false;
       setUser(u);
       setAuthChecked(true);
     });
     return unsubscribe;
   }, []);
+  useEffect(() => {
+    if (!user || !db || !user.uid) { setTotpSecret(""); setTotpPassed(true); setTotpChecked(true); return; }
+    setTotpChecked(false);
+    db.collection("users").doc(user.uid).get().then((d) => {
+      const sec = (d && d.exists && d.data() && d.data().totpSecret) ? d.data().totpSecret : "";
+      setTotpSecret(sec);
+      setTotpPassed(!sec || (typeof window !== "undefined" && window.__totpVerified === true));
+      setTotpChecked(true);
+    }).catch(() => { setTotpSecret(""); setTotpPassed(true); setTotpChecked(true); });
+  }, [user]);
   if (!authChecked) {
     return /*#__PURE__*/ React.createElement(
       "div",
@@ -512,6 +589,10 @@ function App() {
   }
   if (!user) {
     return /*#__PURE__*/ React.createElement(LoginPage, null);
+  }
+  if (!totpChecked) { return /*#__PURE__*/ React.createElement("div", { style: { height: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#0F172A", color: "#00BFA5", fontSize: 16, fontFamily: "sans-serif" } }, "Loading"); }
+  if (totpSecret && !totpPassed) {
+    return /*#__PURE__*/ React.createElement(TotpGate, { secret: totpSecret, onPass: () => { if (typeof window !== "undefined") window.__totpVerified = true; setTotpPassed(true); }, onSignOut: () => { if (auth) auth.signOut(); else window.location.reload(); } });
   }
   return /*#__PURE__*/ React.createElement(ProspectDashboard, { currentUser: user });
 } // ─── Color palette matching the PDF ───────────────────────────────────────────
