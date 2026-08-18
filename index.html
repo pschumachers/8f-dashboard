@@ -122,6 +122,13 @@ const fetchWithRetry = async (url, options, maxRetries, statusCb) => {
   throw new Error("Request failed after retries");
 };
 // ─── Login Page Component ────────────────────────────────────────────────────
+function mfaFriendlyError(err) {
+  var code = err && err.code ? err.code : "";
+  if (code === "auth/operation-not-allowed" || code === "auth/admin-restricted-operation") return "Two factor is not switched on for this project yet. Enable Multi factor authentication (TOTP) in the Firebase console first.";
+  if (code === "auth/invalid-verification-code") return "That code is not right. Enter the current 6 digit code from your authenticator app.";
+  if (code === "auth/requires-recent-login") return "For security, re-enter your password to continue.";
+  return "\u274C " + (err && (err.message || err.code) ? (err.message || err.code) : "Something went wrong.");
+}
 function LoginPage({ onLogin }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -129,6 +136,8 @@ function LoginPage({ onLogin }) {
   const [loading, setLoading] = useState(false);
   const [isReset, setIsReset] = useState(false);
   const [resetSent, setResetSent] = useState(false);
+  const [mfaResolver, setMfaResolver] = useState(null);
+  const [mfaCode, setMfaCode] = useState("");
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
@@ -136,6 +145,7 @@ function LoginPage({ onLogin }) {
     try {
       await auth.signInWithEmailAndPassword(email, password);
     } catch (err) {
+      if (err && err.code === "auth/multi-factor-auth-required") { var resolver = err.resolver || ((typeof firebase !== "undefined" && firebase.auth && firebase.auth.getMultiFactorResolver) ? firebase.auth.getMultiFactorResolver(auth, err) : null); if (resolver) { setMfaResolver(resolver); setLoading(false); return; } }
       const messages = {
         "auth/user-not-found": "No account found with this email.",
         "auth/wrong-password": "Incorrect password.",
@@ -145,6 +155,18 @@ function LoginPage({ onLogin }) {
       };
       setError(messages[err.code] || err.message);
     }
+    setLoading(false);
+  };
+  const handleMfa = async (e) => {
+    e.preventDefault(); setError(""); setLoading(true);
+    try {
+      var totp = (typeof firebase !== "undefined" && firebase.auth) ? firebase.auth.TotpMultiFactorGenerator : null;
+      var hint = null;
+      for (var i = 0; i < mfaResolver.hints.length; i++) { if (totp && mfaResolver.hints[i].factorId === totp.FACTOR_ID) { hint = mfaResolver.hints[i]; break; } }
+      if (!hint) hint = mfaResolver.hints[0];
+      var assertion = totp.assertionForSignIn(hint.uid, (mfaCode || "").trim());
+      await mfaResolver.resolveSignIn(assertion);
+    } catch (err) { setError(mfaFriendlyError(err)); }
     setLoading(false);
   };
   const handleReset = async (e) => {
@@ -219,7 +241,7 @@ function LoginPage({ onLogin }) {
         /*#__PURE__*/ React.createElement(
           "p",
           { style: { margin: "6px 0 0", fontSize: 14, color: "#64748B" } },
-          isReset ? "Reset your password" : "Sign in to continue",
+          mfaResolver ? "Enter your authenticator code" : isReset ? "Reset your password" : "Sign in to continue",
         ),
       ),
       error &&
@@ -254,7 +276,16 @@ function LoginPage({ onLogin }) {
           },
           "Password reset email sent. Check your inbox.",
         ),
-      !isReset
+      mfaResolver
+        ? /*#__PURE__*/ React.createElement(
+            "form",
+            { onSubmit: handleMfa },
+            /*#__PURE__*/ React.createElement("div", { style: { fontSize: 13, color: "#64748B", marginBottom: 12, lineHeight: 1.5 } }, "Open your authenticator app and enter the current 6 digit code for this account."),
+            /*#__PURE__*/ React.createElement("input", { type: "text", inputMode: "numeric", maxLength: 6, autoFocus: true, value: mfaCode, onChange: (e) => setMfaCode(e.target.value.replace(/[^0-9]/g, "")), placeholder: "000000", style: { width: "100%", padding: "12px 14px", border: "1px solid #E5E7EB", borderRadius: 8, fontSize: 20, letterSpacing: 8, textAlign: "center", fontFamily: "inherit", boxSizing: "border-box", outline: "none", marginBottom: 14 } }),
+            /*#__PURE__*/ React.createElement("button", { type: "submit", disabled: loading, style: { width: "100%", padding: "12px", borderRadius: 8, border: "none", background: loading ? "#9CA3AF" : "#1E293B", color: "#fff", fontSize: 15, fontWeight: 700, cursor: loading ? "not-allowed" : "pointer", fontFamily: "inherit" } }, loading ? "Verifying\u2026" : "Verify and sign in"),
+            /*#__PURE__*/ React.createElement("button", { type: "button", onClick: () => { setMfaResolver(null); setMfaCode(""); setError(""); }, style: { width: "100%", padding: "10px", marginTop: 10, borderRadius: 8, border: "none", background: "none", color: "#64748B", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" } }, "Back to sign in")
+          )
+        : !isReset
         ? /*#__PURE__*/ React.createElement(
             "form",
             { onSubmit: handleLogin },
