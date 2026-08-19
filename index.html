@@ -6,7 +6,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="theme-color" content="#00BFA5">
-  <title>Eightfold — Prospect Intelligence</title>
+  <title>8f — Prospect Intelligence</title>
   <link rel="manifest" href="manifest.json">
   <style>
     * { box-sizing: border-box; }
@@ -241,7 +241,7 @@ function LoginPage({ onLogin }) {
         /*#__PURE__*/ React.createElement(
           "h1",
           { style: { margin: 0, fontSize: 22, fontWeight: 700, color: "#1E293B" } },
-          "Eightfold",
+          "8f",
         ),
         /*#__PURE__*/ React.createElement(
           "div",
@@ -519,7 +519,7 @@ async function totpVerify(secretB32, input) {
   return false;
 }
 function totpRandomSecret() { var b = new Uint8Array(20); crypto.getRandomValues(b); return totpB32encode(b); }
-function totpOtpauthUrl(secretB32, email) { return "otpauth://totp/Eightfold%20Dashboard:" + encodeURIComponent(email || "user") + "?secret=" + secretB32 + "&issuer=Eightfold%20Dashboard&algorithm=SHA1&digits=6&period=30"; }
+function totpOtpauthUrl(secretB32, email) { return "otpauth://totp/8f%20Dashboard:" + encodeURIComponent(email || "user") + "?secret=" + secretB32 + "&issuer=8f%20Dashboard&algorithm=SHA1&digits=6&period=30"; }
 
 function TotpGate({ secret, onPass, onSignOut }) {
   var _c = useState(""); var code = _c[0]; var setCode = _c[1];
@@ -568,7 +568,7 @@ function TwoFactorSection() {
     var sec = totpRandomSecret(); setSecret(sec); setCode(""); setPhase("showqr");
     setTimeout(function () {
       loadScript("https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js", "QRCode").then(function () {
-        if (qrRef.current && window.QRCode) { qrRef.current.innerHTML = ""; new window.QRCode(qrRef.current, { text: "otpauth://totp/Eightfold%20Dashboard:" + encodeURIComponent(email()) + "?secret=" + sec + "&issuer=Eightfold%20Dashboard&algorithm=SHA1&digits=6&period=30", width: 176, height: 176 }); }
+        if (qrRef.current && window.QRCode) { qrRef.current.innerHTML = ""; new window.QRCode(qrRef.current, { text: "otpauth://totp/8f%20Dashboard:" + encodeURIComponent(email()) + "?secret=" + sec + "&issuer=8f%20Dashboard&algorithm=SHA1&digits=6&period=30", width: 176, height: 176 }); }
       }).catch(function () {});
     }, 60);
   }
@@ -733,7 +733,7 @@ function dlBlob(blob, filename) {
 const PPTX_CDN = "https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js";
 const XLSX_CDN = "https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js";
 const SEV_COLOR = { CRITICAL: "DC2626", HIGH: "D97706", MEDIUM: "2563EB" };
-const COMPANY_BRAND = { name: "Eightfold", color: "7C3AED" };
+const COMPANY_BRAND = { name: "8f", color: "7C3AED" };
 async function exportToPPTX(account) {
   await loadScript(PPTX_CDN, "pptx");
   if (!window.PptxGenJS) throw new Error("PptxGenJS library not loaded — check internet connection");
@@ -920,7 +920,7 @@ async function exportToPPTX(account) {
       tags: ['Staffing', 'Process', 'Skills']
     },
     {
-      title: 'Eightfold Entry Angle',
+      title: '8f Entry Angle',
       body: truncate(`Opportunity: ${account.highestOpportunity || 'N/A'}\n\nCapability Match: ${account.capabilityMatch || 'N/A'}\n\nNarrative: ${account.leadNarrative || 'N/A'}`, 180),
       tags: ['Solution', 'Fit', 'Value']
     }
@@ -1144,12 +1144,12 @@ async function exportToPPTX(account) {
     }
   }
 
-  // ========== SLIDE 4: WHERE EIGHTFOLD HAS IMPACT ==========
+  // ========== SLIDE 4: WHERE 8f HAS IMPACT ==========
   const slide4 = pptx.addSlide();
   slide4.background = { color: 'FFFFFF' };
 
   // Title
-  slide4.addText(`Where Eightfold Has Specific, Measurable Impact at ${account.companyName || 'Company'}`, {
+  slide4.addText(`Where 8f Has Specific, Measurable Impact at ${account.companyName || 'Company'}`, {
     x: 0.5,
     y: 0.3,
     w: 12.33,
@@ -1251,8 +1251,8 @@ async function exportToPPTX(account) {
       fontFace: 'Calibri'
     });
 
-    // Eightfold impact section
-    slide4.addText('Eightfold Impact:', {
+    // 8f impact section
+    slide4.addText('8f Impact:', {
       x: colX + 0.1,
       y: colY + 1.7,
       w: colWidth - 0.2,
@@ -1316,7 +1316,7 @@ async function exportToPPTX(account) {
   slide5.background = { color: 'FFFFFF' };
 
   // Title
-  slide5.addText(`Where Eightfold Has Specific, Measurable Impact at ${account.companyName || 'Company'}`, {
+  slide5.addText(`Where 8f Has Specific, Measurable Impact at ${account.companyName || 'Company'}`, {
     x: 0.5,
     y: 0.3,
     w: 12.33,
@@ -1331,7 +1331,7 @@ async function exportToPPTX(account) {
     {
       title: account.hyperCellTitle || 'Hypothesis 1',
       evidence: `${account.hyperCellNarrative || 'Key evidence and analysis'}`,
-      phenomImpact: account.capabilityMatch || 'Eightfold solution alignment',
+      phenomImpact: account.capabilityMatch || '8f solution alignment',
       question: account.discoveryQuestions ? (typeof account.discoveryQuestions === 'string' ? account.discoveryQuestions : account.discoveryQuestions[0]) : 'Discovery question?'
     },
     {
@@ -1407,8 +1407,8 @@ async function exportToPPTX(account) {
       fontFace: 'Calibri'
     });
 
-    // Eightfold impact
-    slide5.addText('Eightfold\'s Specific Impact:', {
+    // 8f impact
+    slide5.addText('8f\'s Specific Impact:', {
       x: hypX + 0.2,
       y: hypY + 2.7,
       w: hypW - 0.4,
@@ -1650,8 +1650,8 @@ async function exportToPPTX(account) {
     }
   });
 
-  // Eightfold layer
-  slide7.addText('Eightfold Layer (AI-Driven Screening):', {
+  // 8f layer
+  slide7.addText('8f Layer (AI-Driven Screening):', {
     x: 0.5,
     y: 2.25,
     w: 12.33,
@@ -1662,7 +1662,7 @@ async function exportToPPTX(account) {
     fontFace: 'Calibri'
   });
 
-  const phenomSteps = ['Job in Eightfold', 'AI Matching', 'Candidate Agent', 'AI Screening', 'AI Interviewer', 'Talent Insights'];
+  const phenomSteps = ['Job in 8f', 'AI Matching', 'Candidate Agent', 'AI Screening', 'AI Interviewer', 'Talent Insights'];
   const phenomStepX = [0.7, 1.8, 2.9, 4.0, 5.1, 6.2];
 
   phenomSteps.forEach((step, idx) => {
@@ -1907,8 +1907,8 @@ async function exportToPPTX(account) {
     }
   });
 
-  // Eightfold enhancements
-  slide8.addText('Eightfold Enhancements:', {
+  // 8f enhancements
+  slide8.addText('8f Enhancements:', {
     x: 0.5,
     y: 3.5,
     w: 12.33,
@@ -2092,8 +2092,8 @@ async function exportToPPTX(account) {
     }
   });
 
-  // Eightfold for zone 4
-  slide9.addText('Eightfold\'s Role in Zone 4:', {
+  // 8f for zone 4
+  slide9.addText('8f\'s Role in Zone 4:', {
     x: 0.5,
     y: 3.5,
     w: 12.33,
@@ -2460,7 +2460,7 @@ async function exportToPPTX(account) {
     fontFace: 'Calibri'
   });
 
-  const stepsText = account.nextSteps || 'Schedule initial discovery meeting to align on hiring challenges and Eightfold solution fit.\nConduct deep-dive assessment of current talent workflows.\nDevelop implementation roadmap and quick-win opportunities.';
+  const stepsText = account.nextSteps || 'Schedule initial discovery meeting to align on hiring challenges and 8f solution fit.\nConduct deep-dive assessment of current talent workflows.\nDevelop implementation roadmap and quick-win opportunities.';
 
   slide12.addText(stepsText, {
     x: 0.5,
@@ -2785,7 +2785,7 @@ async function exportToXLSX(account) {
   await loadScript(XLSX_CDN, "xlsx");
   var XLSX = window.XLSX;
   var wb = XLSX.utils.book_new();
-  wb.Props = { Title: (account.companyName || "Account") + " — Prospect Brief", Author: "Eightfold Sales" }; // ── Sheet 1: Overview ──
+  wb.Props = { Title: (account.companyName || "Account") + " — Prospect Brief", Author: "8f Sales" }; // ── Sheet 1: Overview ──
   var overviewRows = [
     ["PROSPECT BRIEF — " + (account.companyName || "").toUpperCase(), ""],
     ["", ""],
@@ -2923,7 +2923,7 @@ async function exportToXLSX(account) {
     ["FIELD", "CONTENT"],
     ["Geo Conflict Impact", account.geoConflictImpact || ""],
     ["Micro Growth Area", account.microGrowthArea || ""],
-    ["Eightfold Geo Play", account.phenomGeoPlay || ""],
+    ["8f Geo Play", account.phenomGeoPlay || ""],
     ["Geo Talent Shift", account.geoTalentShift || ""],
     ["", ""],
     ["HYPER-CELL TITLE", account.hyperCellTitle || ""],
@@ -3274,13 +3274,13 @@ function OpportunityScoreSection({ account, update, claudeApiKey }) {
         sevenMustsScore: mustDone + "/35",
         sevenMustsBreakdown: mustBreak
       };
-      var prompt = "You are a senior Eightfold talent intelligence sales strategist qualifying a talent intelligence opportunity. Based ONLY on the intelligence below, score the opportunity. Weigh: fit of Eightfold's talent intelligence platform to their pains, urgency of the compelling event, budget and access to power, competitive position, and the 7 Musts qualification score (higher completion = better qualified, more likely to close sooner). A low 7 Musts score or a missing compelling event should push timing later and fit lower.\n\nINTELLIGENCE:\n" + JSON.stringify(context) + "\n\nReturn ONLY valid JSON, no prose:\n" + JSON.stringify({
+      var prompt = "You are a senior 8f talent intelligence sales strategist qualifying a talent intelligence opportunity. Based ONLY on the intelligence below, score the opportunity. Weigh: fit of 8f's talent intelligence platform to their pains, urgency of the compelling event, budget and access to power, competitive position, and the 7 Musts qualification score (higher completion = better qualified, more likely to close sooner). A low 7 Musts score or a missing compelling event should push timing later and fit lower.\n\nINTELLIGENCE:\n" + JSON.stringify(context) + "\n\nReturn ONLY valid JSON, no prose:\n" + JSON.stringify({
         oppScore: "integer from 0 to 100, the overall opportunity score. Higher means a stronger fit, nearer-term close and higher value. Must be consistent with oppFit and oppTiming (e.g. a Strong fit closing this quarter scores high; a Weak fit that is Unlikely scores low)",
         oppFit: "one of exactly: Strong fit | Possible fit | Weak fit | Not a fit",
         oppTiming: "one of exactly: This quarter | Next quarter | This year | Next year | Unlikely",
-        oppValue: "estimated deal value as a short string, e.g. '€400K ACV, about €1.2M TCV over 3 years' — base it on revenue, employee scale and typical Eightfold deal sizes for this industry",
+        oppValue: "estimated deal value as a short string, e.g. '€400K ACV, about €1.2M TCV over 3 years' — base it on revenue, employee scale and typical 8f deal sizes for this industry",
         salesCycle: "integer number of months for a realistic sales cycle from now to signature for a deal of this type and size. Enterprise talent intelligence deals typically run 6 to 15 months; a large, multi-stakeholder HR transformation runs longer. Return just the integer",
-        oppRationale: "3 to 5 sentences: fit to Eightfold, urgency from the compelling event, budget and access to power, competition, and what the 7 Musts score tells us. Name the specific evidence you used. British English, no dashes.",
+        oppRationale: "3 to 5 sentences: fit to 8f, urgency from the compelling event, budget and access to power, competition, and what the 7 Musts score tells us. Name the specific evidence you used. British English, no dashes.",
         oppNextSteps: "A short, concrete close plan: the 3 to 6 specific actions needed to win and close this deal, in priority order. Target the biggest gaps in the 7 Musts (missing buyer, no compelling event confirmed, competition unknown, no decision date). Each action should be a clear next step a seller can act on this week, e.g. 'Confirm the economic buyer and budget with the CHRO', 'Pin a decision date and mutual action plan', 'Run a skills-intelligence value session'. British English, no dashes."
       }) + "\n\nRULES: oppFit and oppTiming MUST be exactly one of the listed values, nothing else. If evidence is thin, be conservative (Possible fit or lower, This year or later) and say so in the rationale.";
       var resp = await fetch("https://api.anthropic.com/v1/messages", {
@@ -3417,7 +3417,7 @@ function OpportunityScoreSection({ account, update, claudeApiKey }) {
 var MUSTS = [
   { key: "buyer", n: 1, title: "Who is the Buyer?",
     hint: "The economic buyer who owns the budget and signs off on the talent intelligence decision.",
-    ph: "Who holds the budget and the pen? Name, role (CHRO, CTO, VP Talent Acquisition), what they own, and how sold they are on Eightfold…",
+    ph: "Who holds the budget and the pen? Name, role (CHRO, CTO, VP Talent Acquisition), what they own, and how sold they are on 8f…",
     checks: [
       "Buyer confirmed?",
       "Organisational needs and objectives confirmed?",
@@ -3623,7 +3623,7 @@ function SevenMustsSection({ account, update, claudeApiKey }) {
         taught: { summary: "text", checks: [false, false, false, false, false], weight: 6 }
       };
       var checkList = MUSTS.map(function (m) { return m.n + ". " + m.title + " checks: " + m.checks.join(" | "); }).join("\n");
-      var prompt = "You are a senior Eightfold talent intelligence sales strategist filling in a 7 Musts deal qualification for a talent intelligence opportunity. Use ONLY the intelligence below (plus public knowledge of this company and the Eightfold competitive set: Workday, SuccessFactors, SmartRecruiters, Paradox, Phenom, Beamery, Gem). For each of the 7 Musts write a 2 to 4 sentence quick summary grounded in the intel, set the 5 checks, and set a weight.\n\nCRITICAL on the checks: only set a check to true when the intel genuinely evidences it. These represent things the seller has actually confirmed through real conversations. Most checks should be false at an early stage. Setting a check true with no basis is worse than leaving it false. When you are not sure, leave it false and explain what still needs confirming in the summary.\n\nWEIGHTS: weight is an integer 0 to 100 for how much that Must drives the probability this specific deal closes. The 7 weights MUST add up to 100. Tune them to this deal: if access to the economic buyer is the make or break, weight buyer higher; if a hard decision date and approval process dominate, weight decision higher. Do not just repeat the defaults.\n\nThe 5 checks per Must, in order:\n" + checkList + "\n\nINTELLIGENCE:\n" + JSON.stringify(context) + "\n\nReturn ONLY valid JSON in exactly this shape (checks are arrays of 5 booleans in the order listed above; weight is an integer, all seven summing to 100):\n" + JSON.stringify(schema) + "\n\nRULES: British English, no dashes. Keep summaries specific to this account, not generic. Reference the compelling event, named people and competitors where known.";
+      var prompt = "You are a senior 8f talent intelligence sales strategist filling in a 7 Musts deal qualification for a talent intelligence opportunity. Use ONLY the intelligence below (plus public knowledge of this company and the 8f competitive set: Workday, SuccessFactors, SmartRecruiters, Paradox, Phenom, Beamery, Gem). For each of the 7 Musts write a 2 to 4 sentence quick summary grounded in the intel, set the 5 checks, and set a weight.\n\nCRITICAL on the checks: only set a check to true when the intel genuinely evidences it. These represent things the seller has actually confirmed through real conversations. Most checks should be false at an early stage. Setting a check true with no basis is worse than leaving it false. When you are not sure, leave it false and explain what still needs confirming in the summary.\n\nWEIGHTS: weight is an integer 0 to 100 for how much that Must drives the probability this specific deal closes. The 7 weights MUST add up to 100. Tune them to this deal: if access to the economic buyer is the make or break, weight buyer higher; if a hard decision date and approval process dominate, weight decision higher. Do not just repeat the defaults.\n\nThe 5 checks per Must, in order:\n" + checkList + "\n\nINTELLIGENCE:\n" + JSON.stringify(context) + "\n\nReturn ONLY valid JSON in exactly this shape (checks are arrays of 5 booleans in the order listed above; weight is an integer, all seven summing to 100):\n" + JSON.stringify(schema) + "\n\nRULES: British English, no dashes. Keep summaries specific to this account, not generic. Reference the compelling event, named people and competitors where known.";
       var resp = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
         headers: { "Content-Type": "application/json", "x-api-key": claudeApiKey, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
@@ -3827,7 +3827,7 @@ function MutualPlanSection({ account, update, claudeApiKey, userName }) {
         salesCycle: account.salesCycle || "", dealStartDate: account.dealStartDate || ""
       };
       var schema = { whereToday: "text", whereWant: "text", whyNow: "text", stillNeed: "text", steps: [{ step: "text", who: "text", when: "text" }] };
-      var prompt = "You are an Eightfold talent intelligence Strategic AE writing a mutual success plan and a value summary for a talent intelligence opportunity, in the style of a buyer-first sales professional. Use ONLY the intelligence below. Write four short narrative fields and a joint step plan.\n\nFIELDS:\n- whereToday: 2 to 4 sentences on the prospect's current situation and process, grounded in the intel.\n- whereWant: 2 to 3 sentences on where they want to be, phrased as if in the buyer's own words.\n- whyNow: 2 to 3 sentences on why this is on the agenda now and how the decision gets made (who signs, approvals and timing).\n- stillNeed: a short list, in prose, of the specific numbers and facts you still need to build the case on their figures.\n- steps: 4 to 6 joint steps to build the case together. Each step has step (what happens), who (who is involved), when (This week / Next week / Week after / To agree, or a rough timing).\n\nINTELLIGENCE:\n" + JSON.stringify(context) + "\n\nReturn ONLY valid JSON in exactly this shape:\n" + JSON.stringify(schema) + "\n\nRULES: British English, no dashes. Be specific to this account, not generic. If a fact is unknown, say what still needs confirming rather than inventing it.";
+      var prompt = "You are an 8f talent intelligence Strategic AE writing a mutual success plan and a value summary for a talent intelligence opportunity, in the style of a buyer-first sales professional. Use ONLY the intelligence below. Write four short narrative fields and a joint step plan.\n\nFIELDS:\n- whereToday: 2 to 4 sentences on the prospect's current situation and process, grounded in the intel.\n- whereWant: 2 to 3 sentences on where they want to be, phrased as if in the buyer's own words.\n- whyNow: 2 to 3 sentences on why this is on the agenda now and how the decision gets made (who signs, approvals and timing).\n- stillNeed: a short list, in prose, of the specific numbers and facts you still need to build the case on their figures.\n- steps: 4 to 6 joint steps to build the case together. Each step has step (what happens), who (who is involved), when (This week / Next week / Week after / To agree, or a rough timing).\n\nINTELLIGENCE:\n" + JSON.stringify(context) + "\n\nReturn ONLY valid JSON in exactly this shape:\n" + JSON.stringify(schema) + "\n\nRULES: British English, no dashes. Be specific to this account, not generic. If a fact is unknown, say what still needs confirming rather than inventing it.";
       var resp = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
         headers: { "Content-Type": "application/json", "x-api-key": claudeApiKey, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
@@ -4004,7 +4004,7 @@ function DealObjectivesSection({ account, update, claudeApiKey }) {
       }).join("\n");
       var schema = {};
       DEAL_STAGES.forEach(function (s) { schema[s.key] = { seller: s.seller.map(function () { return false; }), buyer: s.buyer.map(function () { return false; }) }; });
-      var prompt = "You are a senior Eightfold talent intelligence sales strategist marking off the deal progression for a talent intelligence opportunity. Based ONLY on the intelligence below, decide which Seller Actions and Buyer Reciprocations have genuinely happened, and set those to true.\n\nCRITICAL: only set an item true when the intel clearly evidences it has actually occurred. These track real, completed milestones. When in doubt, leave it false. Early-stage deals should have very few items ticked. Do not tick a later stage before the earlier ones are essentially complete.\n\nThe stages and their items, with array positions:\n" + stageList + "\n\nINTELLIGENCE:\n" + JSON.stringify(context) + "\n\nReturn ONLY valid JSON in exactly this shape (each array holds one boolean per item, in the position order shown above):\n" + JSON.stringify(schema) + "\n\nRULES: booleans only, correct array lengths per stage. No prose.";
+      var prompt = "You are a senior 8f talent intelligence sales strategist marking off the deal progression for a talent intelligence opportunity. Based ONLY on the intelligence below, decide which Seller Actions and Buyer Reciprocations have genuinely happened, and set those to true.\n\nCRITICAL: only set an item true when the intel clearly evidences it has actually occurred. These track real, completed milestones. When in doubt, leave it false. Early-stage deals should have very few items ticked. Do not tick a later stage before the earlier ones are essentially complete.\n\nThe stages and their items, with array positions:\n" + stageList + "\n\nINTELLIGENCE:\n" + JSON.stringify(context) + "\n\nReturn ONLY valid JSON in exactly this shape (each array holds one boolean per item, in the position order shown above):\n" + JSON.stringify(schema) + "\n\nRULES: booleans only, correct array lengths per stage. No prose.";
       var resp = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
         headers: { "Content-Type": "application/json", "x-api-key": claudeApiKey, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
@@ -4350,7 +4350,7 @@ const emptyAccount = (id, name = "") => ({
   transcriptNotes: "",
   campaigns: [],
   actionItems: [],
-  // Fastest Growing BU + Eightfold Product Match
+  // Fastest Growing BU + 8f Product Match
   fastestGrowingBU: "",
   buGrowthDrivers: "",
   buTalentNeeds: "",
@@ -4768,7 +4768,7 @@ function IntelUploadCard({ account, update, claudeApiKey }) {
   const [phenomExpanded, setEightfoldExpanded] = useState(false);
   const [phenomText, setEightfoldText] = useState("");
   const [phenomLink, setEightfoldLink] = useState("");
-  const [processingEightfold, setProcessingEightfold] = useState(false);
+  const [processing8f, setProcessing8f] = useState(false);
   const fileRef = React.useRef(null);
   const chatFileRef = React.useRef(null);
   const gongFileRef = React.useRef(null);
@@ -5225,46 +5225,46 @@ function IntelUploadCard({ account, update, claudeApiKey }) {
     }
   };
 
-  // ── Eightfold Workforce Intelligence Processing ──
+  // ── 8f Workforce Intelligence Processing ──
   const processEightfoldContent = async (text, sourceName) => {
     if (!claudeApiKey) { alert("Set your API key first"); return; }
     if (!text || text.length < 30) { alert("Not enough content to analyze."); return; }
-    setProcessingEightfold(true);
+    setProcessing8f(true);
     setUploading(true);
-    setUploadProgress("Analyzing Eightfold workforce intelligence...");
+    setUploadProgress("Analyzing 8f workforce intelligence...");
     try {
       const truncated = text.substring(0, 14000);
       const companyName = account.companyName || "this company";
       const existingWorkforce = [account.workforceScale, account.hiringShape, account.criticalRoles, account.geoPatterns, account.talentPressure].filter(Boolean).join(" | ");
       const existingProblems = [account.cioProblems, account.chroProblems, account.businessPain, account.whyNow].filter(Boolean).join(" | ");
 
-      const prompt = "You are an elite workforce intelligence analyst specialising in Eightfold's talent experience platform. You have been given content from Eightfold's Workforce Intelligence portal or related Eightfold data about or relevant to \"" + companyName + "\".\n\nEXISTING ACCOUNT INTEL:\n- Industry: " + (account.industry || "unknown") + "\n- Workforce data: " + (existingWorkforce || "none yet") + "\n- Problems identified: " + (existingProblems || "none yet") + "\n\nAnalyse the Eightfold content below and extract intelligence mapped to these EXACT sections. Use Eightfold-specific terminology and metrics. Return ONLY valid JSON:\n\n" + JSON.stringify({
+      const prompt = "You are an elite workforce intelligence analyst specialising in 8f's talent experience platform. You have been given content from 8f's Workforce Intelligence portal or related 8f data about or relevant to \"" + companyName + "\".\n\nEXISTING ACCOUNT INTEL:\n- Industry: " + (account.industry || "unknown") + "\n- Workforce data: " + (existingWorkforce || "none yet") + "\n- Problems identified: " + (existingProblems || "none yet") + "\n\nAnalyse the 8f content below and extract intelligence mapped to these EXACT sections. Use 8f-specific terminology and metrics. Return ONLY valid JSON:\n\n" + JSON.stringify({
         workforceIntelligence: {
-          workforceScale: "Workforce scale insights from Eightfold data: headcount trends, skills gaps identified, workforce readiness scores, AI/automation maturity level, internal mobility rates",
-          hiringShape: "Hiring shape from Eightfold lens: apply-to-hire ratios, candidate pipeline health, sourcing channel effectiveness, candidate experience conversion, AI matching quality and Candidate Agent engagement rates",
-          criticalRoles: "Critical roles identified via Eightfold skills intelligence: hardest-to-fill roles, skills gaps, emerging role families, succession planning gaps, skills adjacencies",
-          geoPatterns: "Geographic hiring patterns from Eightfold data: regional talent density, remote work patterns, global talent marketplace utilisation, geo-specific skills availability",
+          workforceScale: "Workforce scale insights from 8f data: headcount trends, skills gaps identified, workforce readiness scores, AI/automation maturity level, internal mobility rates",
+          hiringShape: "Hiring shape from 8f lens: apply-to-hire ratios, candidate pipeline health, sourcing channel effectiveness, candidate experience conversion, AI matching quality and Candidate Agent engagement rates",
+          criticalRoles: "Critical roles identified via 8f skills intelligence: hardest-to-fill roles, skills gaps, emerging role families, succession planning gaps, skills adjacencies",
+          geoPatterns: "Geographic hiring patterns from 8f data: regional talent density, remote work patterns, global talent marketplace utilisation, geo-specific skills availability",
           talentPressure: "Talent pressure indicators: employer brand score, candidate experience benchmarks, competitor talent flows, Glassdoor/Indeed sentiment, internal vs external hire ratios"
         },
         problemIdentification: {
-          cioProblems: "CIO/CTO problems surfaced by Eightfold analysis: HR tech stack fragmentation, lack of AI-powered talent intelligence, poor system integration, no skills taxonomy, data silos between ATS-HCM-LMS",
-          chroProblems: "CHRO problems from Eightfold workforce intel: skills gap visibility, low internal mobility (<15% benchmark), poor candidate experience, manual screening bottlenecks, no talent marketplace, workforce planning blind spots",
-          businessPain: "Business-level pain quantified with Eightfold proof points: cost-per-hire vs industry, time-to-fill vs benchmark (avg 42 days), quality-of-hire gaps, revenue impact of unfilled critical roles, attrition cost",
-          whyNow: "Why-now triggers from Eightfold intelligence: skills obsolescence acceleration (AI/automation disrupting 40% of roles by 2027), competitor talent intelligence platform adoption, workforce planning gap (18-month lag between strategy and HR execution), regulatory skills requirements"
+          cioProblems: "CIO/CTO problems surfaced by 8f analysis: HR tech stack fragmentation, lack of AI-powered talent intelligence, poor system integration, no skills taxonomy, data silos between ATS-HCM-LMS",
+          chroProblems: "CHRO problems from 8f workforce intel: skills gap visibility, low internal mobility (<15% benchmark), poor candidate experience, manual screening bottlenecks, no talent marketplace, workforce planning blind spots",
+          businessPain: "Business-level pain quantified with 8f proof points: cost-per-hire vs industry, time-to-fill vs benchmark (avg 42 days), quality-of-hire gaps, revenue impact of unfilled critical roles, attrition cost",
+          whyNow: "Why-now triggers from 8f intelligence: skills obsolescence acceleration (AI/automation disrupting 40% of roles by 2027), competitor talent intelligence platform adoption, workforce planning gap (18-month lag between strategy and HR execution), regulatory skills requirements"
         },
         useCaseMapping: {
-          workflowAssessment: "Current state vs Eightfold-enabled state: manual sourcing vs AI matching, reactive hiring vs proactive pipeline, no internal marketplace vs skills-based Talent Marketplace, generic candidate experience vs AI-personalised talent experience",
-          highestOpportunity: "Highest-impact Eightfold use case for this account based on their specific workforce challenges. Map to Eightfold capabilities: Talent Acquisition, Talent Management, Resource Management, Workforce Exchange, Talent Insights",
-          capabilityMatch: "Eightfold capability-to-pain mapping: Talent Acquisition (AI matching + Candidate Agent) -> time-to-fill; candidate relationship management -> pipeline; Talent Management (internal mobility + Talent Marketplace) -> internal mobility; Talent Insights -> skills-based workforce planning; Talent Agents (AI Interviewer + AI screening) -> screening automation; Resource Management -> project/resource staffing"
+          workflowAssessment: "Current state vs 8f-enabled state: manual sourcing vs AI matching, reactive hiring vs proactive pipeline, no internal marketplace vs skills-based Talent Marketplace, generic candidate experience vs AI-personalised talent experience",
+          highestOpportunity: "Highest-impact 8f use case for this account based on their specific workforce challenges. Map to 8f capabilities: Talent Acquisition, Talent Management, Resource Management, Workforce Exchange, Talent Insights",
+          capabilityMatch: "8f capability-to-pain mapping: Talent Acquisition (AI matching + Candidate Agent) -> time-to-fill; candidate relationship management -> pipeline; Talent Management (internal mobility + Talent Marketplace) -> internal mobility; Talent Insights -> skills-based workforce planning; Talent Agents (AI Interviewer + AI screening) -> screening automation; Resource Management -> project/resource staffing"
         },
         businessChallenges: [
-          { severity: "CRITICAL or HIGH or MEDIUM", title: "Challenge title from Eightfold analysis", businessChallenge: "Specific challenge with Eightfold workforce data and benchmarks", solution: "Eightfold capability and expected outcome with metrics (e.g. 30% faster time-to-fill, 160+ recruiter hours saved in two months, more than doubled internal mobility engagement)", proofPoint: "Eightfold customer proof point (e.g. Softtek achieved 30% faster time-to-fill; STMicroelectronics saved 160+ recruiter hours in two months; NTT DATA more than doubled employee self-nominations)" }
+          { severity: "CRITICAL or HIGH or MEDIUM", title: "Challenge title from 8f analysis", businessChallenge: "Specific challenge with 8f workforce data and benchmarks", solution: "8f capability and expected outcome with metrics (e.g. 30% faster time-to-fill, 160+ recruiter hours saved in two months, more than doubled internal mobility engagement)", proofPoint: "8f customer proof point (e.g. Softtek achieved 30% faster time-to-fill; STMicroelectronics saved 160+ recruiter hours in two months; NTT DATA more than doubled employee self-nominations)" }
         ],
         hyperCell: {
-          hyperCellTitle: "Single highest-value Eightfold opportunity for this account — one sentence",
-          hyperCellNarrative: "Executive narrative: why this specific Eightfold capability is the #1 priority for this account. Reference their specific workforce data, industry benchmarks, and Eightfold ROI metrics. Include: the business problem, the Eightfold solution, quantified expected impact, and the urgency driver."
+          hyperCellTitle: "Single highest-value 8f opportunity for this account — one sentence",
+          hyperCellNarrative: "Executive narrative: why this specific 8f capability is the #1 priority for this account. Reference their specific workforce data, industry benchmarks, and 8f ROI metrics. Include: the business problem, the 8f solution, quantified expected impact, and the urgency driver."
         }
-      }) + "\n\nEIGHTFOLD DATA/CONTENT:\n" + truncated + "\n\nCRITICAL RULES:\n1. Use REAL Eightfold proof points (e.g. Softtek 30% faster time-to-fill; STMicroelectronics 160+ recruiter hours saved in two months; NTT DATA more than doubled employee self-nominations) and platform scale (deep-learning skills graph of 1.4M+ skills and billions of talent profiles across 145+ countries).\n2. Reference Eightfold products/capabilities by name: the Talent Intelligence Platform, Talent Acquisition, Talent Management, Resource Management, Workforce Exchange, Talent Insights, Talent Agents (AI Interviewer, AI Interview Companion, Candidate Agent), and Talent Marketplace.\n3. Map challenges to Eightfold outcomes: customers see faster time-to-fill, sharply reduced manual sourcing effort, and materially higher internal mobility engagement.\n4. If the content doesn't contain company-specific data, use Eightfold industry benchmarks and frameworks to ENRICH the existing account intel.\n5. For businessChallenges, provide 2-4 challenges. Each must have a Eightfold-specific solution and proof point.\n6. APPEND to existing intelligence, don't replace. Prefix new insights with '[Eightfold Intel]' tag.";
+      }) + "\n\n8f DATA/CONTENT:\n" + truncated + "\n\nCRITICAL RULES:\n1. Use REAL 8f proof points (e.g. Softtek 30% faster time-to-fill; STMicroelectronics 160+ recruiter hours saved in two months; NTT DATA more than doubled employee self-nominations) and platform scale (deep-learning skills graph of 1.4M+ skills and billions of talent profiles across 145+ countries).\n2. Reference 8f products/capabilities by name: the Talent Intelligence Platform, Talent Acquisition, Talent Management, Resource Management, Workforce Exchange, Talent Insights, Talent Agents (AI Interviewer, AI Interview Companion, Candidate Agent), and Talent Marketplace.\n3. Map challenges to 8f outcomes: customers see faster time-to-fill, sharply reduced manual sourcing effort, and materially higher internal mobility engagement.\n4. If the content doesn't contain company-specific data, use 8f industry benchmarks and frameworks to ENRICH the existing account intel.\n5. For businessChallenges, provide 2-4 challenges. Each must have a 8f-specific solution and proof point.\n6. APPEND to existing intelligence, don't replace. Prefix new insights with '[8f Intel]' tag.";
 
       const resp = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
@@ -5335,7 +5335,7 @@ function IntelUploadCard({ account, update, claudeApiKey }) {
           if (existingTitles.includes(ch.title.toLowerCase())) return;
           existingChallenges.push({
             severity: ch.severity || "HIGH",
-            title: "[Eightfold] " + ch.title,
+            title: "[8f] " + ch.title,
             businessChallenge: ch.businessChallenge || "",
             solution: ch.solution || "",
             proofPoint: ch.proofPoint || "",
@@ -5352,16 +5352,16 @@ function IntelUploadCard({ account, update, claudeApiKey }) {
         if (hc.hyperCellTitle && hc.hyperCellTitle.length > 5) {
           const existingTitle = account.hyperCellTitle || "";
           if (!existingTitle) {
-            update("hyperCellTitle", "[Eightfold] " + hc.hyperCellTitle);
+            update("hyperCellTitle", "[8f] " + hc.hyperCellTitle);
           } else {
-            update("hyperCellTitle", existingTitle + " | [Eightfold] " + hc.hyperCellTitle);
+            update("hyperCellTitle", existingTitle + " | [8f] " + hc.hyperCellTitle);
           }
           updatedCount++;
           updatedFields.push("hyperCellTitle");
         }
         if (hc.hyperCellNarrative && hc.hyperCellNarrative.length > 10) {
           const existingNarr = account.hyperCellNarrative || "";
-          const newNarr = existingNarr ? existingNarr + "\n\n[Eightfold Intel] " + hc.hyperCellNarrative : "[Eightfold Intel] " + hc.hyperCellNarrative;
+          const newNarr = existingNarr ? existingNarr + "\n\n[8f Intel] " + hc.hyperCellNarrative : "[8f Intel] " + hc.hyperCellNarrative;
           update("hyperCellNarrative", newNarr);
           updatedCount++;
           updatedFields.push("hyperCellNarrative");
@@ -5370,18 +5370,18 @@ function IntelUploadCard({ account, update, claudeApiKey }) {
 
       // Record in upload history
       const now = new Date().toISOString().split("T")[0];
-      const newHistory = [...uploadHistory, { filename: "Eightfold: " + sourceName, date: now, fields: updatedCount, updatedFields: updatedFields }];
+      const newHistory = [...uploadHistory, { filename: "8f: " + sourceName, date: now, fields: updatedCount, updatedFields: updatedFields }];
       setUploadHistory(newHistory);
       update("_uploadHistory", newHistory);
       update("lastUpdated", now);
 
-      setUploadProgress("\u2705 Eightfold Intel: Updated " + updatedCount + " fields across 5 sections: " + updatedFields.slice(0, 6).join(", ") + (updatedFields.length > 6 ? " +" + (updatedFields.length - 6) + " more" : ""));
+      setUploadProgress("\u2705 8f Intel: Updated " + updatedCount + " fields across 5 sections: " + updatedFields.slice(0, 6).join(", ") + (updatedFields.length > 6 ? " +" + (updatedFields.length - 6) + " more" : ""));
       setTimeout(() => setUploadProgress(""), 15000);
       setEightfoldText("");
     } catch (err) {
-      setUploadProgress("\u274C Eightfold error: " + err.message);
+      setUploadProgress("\u274C 8f error: " + err.message);
     }
-    setProcessingEightfold(false);
+    setProcessing8f(false);
     setUploading(false);
   };
 
@@ -5389,9 +5389,9 @@ function IntelUploadCard({ account, update, claudeApiKey }) {
     const url = phenomLink.trim();
     if (!url) return;
     if (!claudeApiKey) { alert("Set your API key first"); return; }
-    setProcessingEightfold(true);
+    setProcessing8f(true);
     setUploading(true);
-    setUploadProgress("Fetching Eightfold URL...");
+    setUploadProgress("Fetching 8f URL...");
     try {
       let text = "";
       try {
@@ -5406,23 +5406,23 @@ function IntelUploadCard({ account, update, claudeApiKey }) {
         } catch (e) { /* proxy also failed */ }
       }
       if (!text || text.length < 50) {
-        setUploadProgress("\u274C Could not fetch Eightfold URL. Please paste the content manually instead.");
-        setProcessingEightfold(false);
+        setUploadProgress("\u274C Could not fetch 8f URL. Please paste the content manually instead.");
+        setProcessing8f(false);
         setUploading(false);
         return;
       }
       await processEightfoldContent(text, url.length > 40 ? url.substring(0, 37) + "..." : url);
     } catch (err) {
       setUploadProgress("\u274C " + err.message);
-      setProcessingEightfold(false);
+      setProcessing8f(false);
       setUploading(false);
     }
   };
 
   const processEightfoldFile = async (file) => {
-    setProcessingEightfold(true);
+    setProcessing8f(true);
     setUploading(true);
-    setUploadProgress("Reading Eightfold data file...");
+    setUploadProgress("Reading 8f data file...");
     try {
       let text = "";
       if (file.name.endsWith(".pdf")) {
@@ -5436,14 +5436,14 @@ function IntelUploadCard({ account, update, claudeApiKey }) {
       }
       if (!text || text.length < 50) {
         setUploadProgress("\u274C Could not extract text from this file");
-        setProcessingEightfold(false);
+        setProcessing8f(false);
         setUploading(false);
         return;
       }
       await processEightfoldContent(text, file.name);
     } catch (err) {
       setUploadProgress("\u274C " + err.message);
-      setProcessingEightfold(false);
+      setProcessing8f(false);
       setUploading(false);
     }
   };
@@ -5908,7 +5908,7 @@ function IntelUploadCard({ account, update, claudeApiKey }) {
     { id: "upload", label: "\uD83D\uDCC4 Upload", color: C.teal },
     { id: "chatgpt", label: "\uD83E\uDD16 ChatGPT", color: "#10A37F" },
     { id: "gong", label: "\uD83C\uDFA4 Gong", color: "#7C3AED" },
-    { id: "phenom", label: "\uD83E\uDDE0 Eightfold", color: "#0D9488" },
+    { id: "phenom", label: "\uD83E\uDDE0 8f", color: "#0D9488" },
     { id: "history", label: "\uD83D\uDCCB History", color: C.muted },
   ];
 
@@ -5925,7 +5925,7 @@ function IntelUploadCard({ account, update, claudeApiKey }) {
     // ── Intel Modal ──
     intelModalOpen && /*#__PURE__*/ React.createElement(React.Fragment, null,
       /*#__PURE__*/ React.createElement("div", {
-        onClick: () => { if (!uploading && !processingChat && !processingGong && !processingEightfold) setIntelModalOpen(false); },
+        onClick: () => { if (!uploading && !processingChat && !processingGong && !processing8f) setIntelModalOpen(false); },
         style: { position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", zIndex: 2000 },
       }),
       /*#__PURE__*/ React.createElement("div", {
@@ -5936,7 +5936,7 @@ function IntelUploadCard({ account, update, claudeApiKey }) {
           /*#__PURE__*/ React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 } },
             /*#__PURE__*/ React.createElement("div", { style: { fontSize: 16, fontWeight: 700, color: C.text } }, "\u2795 Add Intelligence"),
             /*#__PURE__*/ React.createElement("button", {
-              onClick: () => { if (!uploading && !processingChat && !processingGong && !processingEightfold) setIntelModalOpen(false); },
+              onClick: () => { if (!uploading && !processingChat && !processingGong && !processing8f) setIntelModalOpen(false); },
               style: { background: "none", border: "none", fontSize: 20, color: C.muted, cursor: "pointer", padding: 4 },
             }, "\u2715"),
           ),
@@ -6125,23 +6125,23 @@ function IntelUploadCard({ account, update, claudeApiKey }) {
         }, processingGong ? "\u23F3 Analyzing..." : "\u2728 Extract Intelligence from Gong Call"),
       ),
     ), // end gong tab
-    // ── Eightfold tab ──
+    // ── 8f tab ──
     activeIntelTab === "phenom" && /*#__PURE__*/ React.createElement("div", null,
-        /*#__PURE__*/ React.createElement("div", { style: { fontSize: 12, color: C.muted, marginBottom: 10 } }, "Import workforce intelligence from Eightfold\u2019s platform to enrich Workforce, Problems, Use Cases, Challenges, and Hyper-Cell sections. Paste content from Eightfold Talent Insights (eightfold.ai), upload a report, or use a link."),
-        // Eightfold link input
+        /*#__PURE__*/ React.createElement("div", { style: { fontSize: 12, color: C.muted, marginBottom: 10 } }, "Import workforce intelligence from 8f\u2019s platform to enrich Workforce, Problems, Use Cases, Challenges, and Hyper-Cell sections. Paste content from 8f Talent Insights (eightfold.ai), upload a report, or use a link."),
+        // 8f link input
         /*#__PURE__*/ React.createElement("div", { style: { display: "flex", gap: 6, marginBottom: 8 } },
           /*#__PURE__*/ React.createElement("input", {
             value: phenomLink,
             onChange: (e) => setEightfoldLink(e.target.value),
-            onKeyDown: (e) => { if (e.key === "Enter" && phenomLink.trim() && !processingEightfold) processEightfoldLink(); },
-            placeholder: "Paste Eightfold URL (e.g. eightfold.ai/talent-insights)...",
-            disabled: processingEightfold,
+            onKeyDown: (e) => { if (e.key === "Enter" && phenomLink.trim() && !processing8f) processEightfoldLink(); },
+            placeholder: "Paste 8f URL (e.g. eightfold.ai/talent-insights)...",
+            disabled: processing8f,
             style: { flex: 1, padding: "7px 10px", border: "1px solid " + C.border, borderRadius: 6, background: C.card, color: C.text, fontSize: 11, outline: "none" },
           }),
           /*#__PURE__*/ React.createElement("button", {
             onClick: processEightfoldLink,
-            disabled: processingEightfold || !phenomLink.trim(),
-            style: { padding: "7px 12px", borderRadius: 6, border: "none", cursor: processingEightfold || !phenomLink.trim() ? "not-allowed" : "pointer", background: processingEightfold || !phenomLink.trim() ? C.border : "#0D9488", color: "#fff", fontSize: 11, fontWeight: 600, flexShrink: 0 },
+            disabled: processing8f || !phenomLink.trim(),
+            style: { padding: "7px 12px", borderRadius: 6, border: "none", cursor: processing8f || !phenomLink.trim() ? "not-allowed" : "pointer", background: processing8f || !phenomLink.trim() ? C.border : "#0D9488", color: "#fff", fontSize: 11, fontWeight: 600, flexShrink: 0 },
           }, "\uD83D\uDD17 Fetch"),
         ),
         // File upload
@@ -6153,32 +6153,32 @@ function IntelUploadCard({ account, update, claudeApiKey }) {
           }),
           /*#__PURE__*/ React.createElement("button", {
             onClick: () => phenomFileRef.current && phenomFileRef.current.click(),
-            disabled: processingEightfold,
-            style: { flex: 1, padding: "8px 10px", borderRadius: 6, border: "1px dashed #0D9488", cursor: processingEightfold ? "not-allowed" : "pointer", background: "transparent", color: "#0D9488", fontSize: 11, fontWeight: 500 },
-          }, "\uD83D\uDCC1 Upload Eightfold Report (PDF, TXT, DOCX, HTML)"),
+            disabled: processing8f,
+            style: { flex: 1, padding: "8px 10px", borderRadius: 6, border: "1px dashed #0D9488", cursor: processing8f ? "not-allowed" : "pointer", background: "transparent", color: "#0D9488", fontSize: 11, fontWeight: 500 },
+          }, "\uD83D\uDCC1 Upload 8f Report (PDF, TXT, DOCX, HTML)"),
         ),
         // Paste area
         /*#__PURE__*/ React.createElement("textarea", {
           value: phenomText,
           onChange: (e) => setEightfoldText(e.target.value),
-          placeholder: "Or paste Eightfold workforce intelligence content here...\n\nTip: Go to Eightfold Talent Insights (eightfold.ai), select the relevant company or industry report, copy the content and paste it here. You can also paste skills intelligence data, Talent Marketplace reports, or workforce readiness assessments.",
-          disabled: processingEightfold,
+          placeholder: "Or paste 8f workforce intelligence content here...\n\nTip: Go to 8f Talent Insights (eightfold.ai), select the relevant company or industry report, copy the content and paste it here. You can also paste skills intelligence data, Talent Marketplace reports, or workforce readiness assessments.",
+          disabled: processing8f,
           rows: 5,
           style: { width: "100%", padding: "8px 10px", border: "1px solid " + C.border, borderRadius: 6, background: C.card, color: C.text, fontSize: 11, fontFamily: "inherit", resize: "vertical", outline: "none", boxSizing: "border-box", marginBottom: 8 },
         }),
         phenomText.trim().length > 20 && /*#__PURE__*/ React.createElement("button", {
-          onClick: () => processEightfoldContent(phenomText, "Pasted Eightfold data"),
-          disabled: processingEightfold,
-          style: { width: "100%", padding: "8px 12px", borderRadius: 6, border: "none", cursor: processingEightfold ? "wait" : "pointer", background: processingEightfold ? C.muted : "#0D9488", color: "#fff", fontSize: 12, fontWeight: 600, fontFamily: "inherit" },
-        }, processingEightfold ? "\u23F3 Analyzing Eightfold Data..." : "\uD83E\uDDE0 Enrich 5 Sections with Eightfold Intelligence"),
+          onClick: () => processEightfoldContent(phenomText, "Pasted 8f data"),
+          disabled: processing8f,
+          style: { width: "100%", padding: "8px 12px", borderRadius: 6, border: "none", cursor: processing8f ? "wait" : "pointer", background: processing8f ? C.muted : "#0D9488", color: "#fff", fontSize: 12, fontWeight: 600, fontFamily: "inherit" },
+        }, processing8f ? "\u23F3 Analyzing 8f Data..." : "\uD83E\uDDE0 Enrich 5 Sections with 8f Intelligence"),
         // Quick-enrich without content (uses Claude general knowledge + account data)
         /*#__PURE__*/ React.createElement("div", { style: { marginTop: 8, paddingTop: 8, borderTop: "1px dashed " + C.border } },
-          /*#__PURE__*/ React.createElement("div", { style: { fontSize: 10, color: C.muted, marginBottom: 6 } }, "No Eightfold data to paste? Use AI to enrich sections with Eightfold frameworks and benchmarks based on your existing account intelligence:"),
+          /*#__PURE__*/ React.createElement("div", { style: { fontSize: 10, color: C.muted, marginBottom: 6 } }, "No 8f data to paste? Use AI to enrich sections with 8f frameworks and benchmarks based on your existing account intelligence:"),
           /*#__PURE__*/ React.createElement("button", {
-            onClick: () => processEightfoldContent("Use Eightfold workforce intelligence frameworks, benchmarks, and product capabilities to enrich the account intelligence for " + (account.companyName || "this company") + " in the " + (account.industry || "unknown") + " industry. Apply Eightfold-specific capabilities and proof points: deep-learning skills intelligence (1.4M+ skills), internal mobility via Talent Marketplace (NTT DATA more than doubled employee self-nominations), AI matching and screening via Talent Acquisition and Talent Agents (Softtek 30% faster time-to-fill; STMicroelectronics 160+ recruiter hours saved in two months), and skills-based workforce planning via Talent Insights. Use industry-specific Eightfold ROI data and deployment patterns.", "AI-enriched Eightfold analysis"),
-            disabled: processingEightfold,
-            style: { width: "100%", padding: "8px 12px", borderRadius: 6, border: "1px solid #0D9488", cursor: processingEightfold ? "wait" : "pointer", background: "transparent", color: "#0D9488", fontSize: 11, fontWeight: 600, fontFamily: "inherit" },
-          }, processingEightfold ? "\u23F3 Enriching..." : "\u2728 Auto-Enrich with Eightfold Frameworks (no paste needed)"),
+            onClick: () => processEightfoldContent("Use 8f workforce intelligence frameworks, benchmarks, and product capabilities to enrich the account intelligence for " + (account.companyName || "this company") + " in the " + (account.industry || "unknown") + " industry. Apply 8f-specific capabilities and proof points: deep-learning skills intelligence (1.4M+ skills), internal mobility via Talent Marketplace (NTT DATA more than doubled employee self-nominations), AI matching and screening via Talent Acquisition and Talent Agents (Softtek 30% faster time-to-fill; STMicroelectronics 160+ recruiter hours saved in two months), and skills-based workforce planning via Talent Insights. Use industry-specific 8f ROI data and deployment patterns.", "AI-enriched 8f analysis"),
+            disabled: processing8f,
+            style: { width: "100%", padding: "8px 12px", borderRadius: 6, border: "1px solid #0D9488", cursor: processing8f ? "wait" : "pointer", background: "transparent", color: "#0D9488", fontSize: 11, fontWeight: 600, fontFamily: "inherit" },
+          }, processing8f ? "\u23F3 Enriching..." : "\u2728 Auto-Enrich with 8f Frameworks (no paste needed)"),
         ),
     ), // end phenom tab
     // ── History tab ──
@@ -6225,15 +6225,15 @@ function ExecutiveBriefSection({ account, update, claudeApiKey }) {
         transcriptNotes: safeStr(account.transcriptNotes).substring(0, 300),
         hyperCellTitle: account.hyperCellTitle || "",
       };
-      const prompt = "You are a senior sales intelligence analyst. For \"" + context.companyName + "\", create a comprehensive executive brief by synthesising ALL available intelligence. Use public data, Eightfold workforce frameworks, and any existing account data. CONTEXT:\n" + JSON.stringify(context) + "\n\nReturn ONLY valid JSON:\n" + JSON.stringify({
-        atAGlance: "2-3 sentence executive overview combining company fundamentals with talent/workforce positioning. Mention key Eightfold-relevant signals.",
-        hypothesis: "Sharp sales hypothesis: why this company needs Eightfold NOW. Reference specific pain + urgency + capability match.",
+      const prompt = "You are a senior sales intelligence analyst. For \"" + context.companyName + "\", create a comprehensive executive brief by synthesising ALL available intelligence. Use public data, 8f workforce frameworks, and any existing account data. CONTEXT:\n" + JSON.stringify(context) + "\n\nReturn ONLY valid JSON:\n" + JSON.stringify({
+        atAGlance: "2-3 sentence executive overview combining company fundamentals with talent/workforce positioning. Mention key 8f-relevant signals.",
+        hypothesis: "Sharp sales hypothesis: why this company needs 8f NOW. Reference specific pain + urgency + capability match.",
         keySignals: ["signal 1 — [source]", "signal 2 — [source]", "signal 3 — [source]", "signal 4 — [source]"],
         primarySponsor: "Recommended primary sponsor (name + title if known, or role) with reasoning",
         leadNarrative: "Opening narrative for first executive conversation — compelling, specific, insight-led",
         discoveryAngle: "Proposed discovery framing that surfaces the deepest pain",
-        proofPoint: "Most relevant Eightfold proof point for this account's industry and challenges"
-      }) + "\n\nRULES: Use Eightfold customer proof points and ROI benchmarks. If existing data is present, ENHANCE it — don't replace. Prefix new signals with their source in brackets.";
+        proofPoint: "Most relevant 8f proof point for this account's industry and challenges"
+      }) + "\n\nRULES: Use 8f customer proof points and ROI benchmarks. If existing data is present, ENHANCE it — don't replace. Prefix new signals with their source in brackets.";
       const resp = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
         headers: { "Content-Type": "application/json", "x-api-key": claudeApiKey, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
@@ -6829,12 +6829,12 @@ function HRTechStackSection({ account, update, claudeApiKey }) {
 function WorkforceSection({ account, update, claudeApiKey }) {
   const [enriching, setEnriching] = useState(false);
   const [enrichStatus, setEnrichStatus] = useState("");
-  const enrichWithEightfold = async () => {
+  const enrichWith8f = async () => {
     if (!claudeApiKey) { alert("Set your API key first"); return; }
-    setEnriching(true); setEnrichStatus("Enriching workforce intelligence with Eightfold frameworks...");
+    setEnriching(true); setEnrichStatus("Enriching workforce intelligence with 8f frameworks...");
     try {
       const existing = { workforceScale: account.workforceScale || "", hiringShape: account.hiringShape || "", criticalRoles: account.criticalRoles || "", geoPatterns: account.geoPatterns || "", talentPressure: account.talentPressure || "" };
-      const prompt = "You are a Eightfold workforce intelligence analyst. For \"" + (account.companyName || "this company") + "\" (industry: " + (account.industry || "unknown") + ", employees: " + (account.employees || "unknown") + "), enrich these workforce fields using Eightfold's frameworks, benchmarks and public data. EXISTING DATA:\n" + JSON.stringify(existing) + "\n\nReturn ONLY valid JSON with the SAME keys. For each field, APPEND new Eightfold-sourced insights (prefixed with [Eightfold Intel]) to the existing text. Use real Eightfold signals: deep-learning skills intelligence (1.4M+ skills), internal mobility via Talent Marketplace, AI matching quality, workforce readiness frameworks, and industry-specific talent data. If existing data is empty, provide fresh Eightfold-lens analysis.";
+      const prompt = "You are a 8f workforce intelligence analyst. For \"" + (account.companyName || "this company") + "\" (industry: " + (account.industry || "unknown") + ", employees: " + (account.employees || "unknown") + "), enrich these workforce fields using 8f's frameworks, benchmarks and public data. EXISTING DATA:\n" + JSON.stringify(existing) + "\n\nReturn ONLY valid JSON with the SAME keys. For each field, APPEND new 8f-sourced insights (prefixed with [8f Intel]) to the existing text. Use real 8f signals: deep-learning skills intelligence (1.4M+ skills), internal mobility via Talent Marketplace, AI matching quality, workforce readiness frameworks, and industry-specific talent data. If existing data is empty, provide fresh 8f-lens analysis.";
       const resp = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
         headers: { "Content-Type": "application/json", "x-api-key": claudeApiKey, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
@@ -6850,7 +6850,7 @@ function WorkforceSection({ account, update, claudeApiKey }) {
       ["workforceScale", "hiringShape", "criticalRoles", "geoPatterns", "talentPressure"].forEach(f => {
         if (result[f] && typeof result[f] === "string" && result[f].length > 10) { update(f, result[f]); count++; }
       });
-      setEnrichStatus("\u2705 Enriched " + count + " workforce fields with Eightfold intel");
+      setEnrichStatus("\u2705 Enriched " + count + " workforce fields with 8f intel");
       setTimeout(() => setEnrichStatus(""), 8000);
     } catch (err) { setEnrichStatus("\u274C " + err.message); }
     setEnriching(false);
@@ -6866,9 +6866,9 @@ function WorkforceSection({ account, update, claudeApiKey }) {
     }),
     /*#__PURE__*/ React.createElement("div", { style: { display: "flex", gap: 6, marginBottom: 12, flexWrap: "wrap", alignItems: "center" } },
       /*#__PURE__*/ React.createElement("button", {
-        onClick: enrichWithEightfold, disabled: enriching,
+        onClick: enrichWith8f, disabled: enriching,
         style: { padding: "6px 14px", borderRadius: 6, border: "1px solid #0D9488", background: enriching ? "#E5E7EB" : "#F0FDFA", color: "#0D9488", fontSize: 11, fontWeight: 600, cursor: enriching ? "wait" : "pointer" },
-      }, enriching ? "\u23F3 Enriching..." : "\uD83E\uDDE0 Enrich with Eightfold Intel"),
+      }, enriching ? "\u23F3 Enriching..." : "\uD83E\uDDE0 Enrich with 8f Intel"),
       enrichStatus && /*#__PURE__*/ React.createElement("span", { style: { fontSize: 11, color: enrichStatus.startsWith("\u274C") ? "#DC2626" : "#0D9488", fontWeight: 500 } }, enrichStatus),
     ),
     [
@@ -7555,12 +7555,12 @@ INCLUSION RULES:
 function ProblemIdentificationSection({ account, update, claudeApiKey }) {
   const [enriching, setEnriching] = useState(false);
   const [enrichStatus, setEnrichStatus] = useState("");
-  const enrichWithEightfold = async () => {
+  const enrichWith8f = async () => {
     if (!claudeApiKey) { alert("Set your API key first"); return; }
-    setEnriching(true); setEnrichStatus("Enriching problems with Eightfold analysis...");
+    setEnriching(true); setEnrichStatus("Enriching problems with 8f analysis...");
     try {
       const existing = { cioProblems: account.cioProblems || "", chroProblems: account.chroProblems || "", businessPain: account.businessPain || "", whyNow: account.whyNow || "", problemHypothesis: account.problemHypothesis || "" };
-      const prompt = "You are a Eightfold sales strategist. For \"" + (account.companyName || "this company") + "\" (industry: " + (account.industry || "unknown") + ", employees: " + (account.employees || "unknown") + "), enrich problem identification using Eightfold intelligence and public data. EXISTING DATA:\n" + JSON.stringify(existing) + "\n\nReturn ONLY valid JSON with same keys. APPEND [Eightfold Intel] insights. Use Eightfold proof points and industry framing: enterprises struggle with fragmented HR tech and low AI/automation maturity, long lags between workforce strategy and HR execution, elevated time-to-fill, and skills taxonomy gaps; Eightfold customers such as Softtek (30% faster time-to-fill), STMicroelectronics (160+ recruiter hours saved in two months) and NTT DATA (more than doubled employee self-nominations) demonstrate the upside of a deep-learning skills graph. Surface CIO problems (fragmented HR tech, no AI skills matching), CHRO problems (workforce planning gaps, retention, employer brand), business pain (cost-per-hire, unfilled roles revenue impact), and why-now triggers (AI disruption, skills obsolescence, competitor platform adoption).";
+      const prompt = "You are a 8f sales strategist. For \"" + (account.companyName || "this company") + "\" (industry: " + (account.industry || "unknown") + ", employees: " + (account.employees || "unknown") + "), enrich problem identification using 8f intelligence and public data. EXISTING DATA:\n" + JSON.stringify(existing) + "\n\nReturn ONLY valid JSON with same keys. APPEND [8f Intel] insights. Use 8f proof points and industry framing: enterprises struggle with fragmented HR tech and low AI/automation maturity, long lags between workforce strategy and HR execution, elevated time-to-fill, and skills taxonomy gaps; 8f customers such as Softtek (30% faster time-to-fill), STMicroelectronics (160+ recruiter hours saved in two months) and NTT DATA (more than doubled employee self-nominations) demonstrate the upside of a deep-learning skills graph. Surface CIO problems (fragmented HR tech, no AI skills matching), CHRO problems (workforce planning gaps, retention, employer brand), business pain (cost-per-hire, unfilled roles revenue impact), and why-now triggers (AI disruption, skills obsolescence, competitor platform adoption).";
       const resp = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
         headers: { "Content-Type": "application/json", "x-api-key": claudeApiKey, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
@@ -7592,9 +7592,9 @@ function ProblemIdentificationSection({ account, update, claudeApiKey }) {
     }),
     /*#__PURE__*/ React.createElement("div", { style: { display: "flex", gap: 6, marginBottom: 12, flexWrap: "wrap", alignItems: "center" } },
       /*#__PURE__*/ React.createElement("button", {
-        onClick: enrichWithEightfold, disabled: enriching,
+        onClick: enrichWith8f, disabled: enriching,
         style: { padding: "6px 14px", borderRadius: 6, border: "1px solid #0D9488", background: enriching ? "#E5E7EB" : "#F0FDFA", color: "#0D9488", fontSize: 11, fontWeight: 600, cursor: enriching ? "wait" : "pointer" },
-      }, enriching ? "\u23F3 Enriching..." : "\uD83E\uDDE0 Enrich with Eightfold Intel"),
+      }, enriching ? "\u23F3 Enriching..." : "\uD83E\uDDE0 Enrich with 8f Intel"),
       enrichStatus && /*#__PURE__*/ React.createElement("span", { style: { fontSize: 11, color: enrichStatus.startsWith("\u274C") ? "#DC2626" : "#0D9488", fontWeight: 500 } }, enrichStatus),
     ),
     [
@@ -7655,12 +7655,12 @@ function ProblemIdentificationSection({ account, update, claudeApiKey }) {
 function UseCaseMappingSection({ account, update, claudeApiKey }) {
   const [enriching, setEnriching] = useState(false);
   const [enrichStatus, setEnrichStatus] = useState("");
-  const enrichWithEightfold = async () => {
+  const enrichWith8f = async () => {
     if (!claudeApiKey) { alert("Set your API key first"); return; }
-    setEnriching(true); setEnrichStatus("Mapping Eightfold use cases...");
+    setEnriching(true); setEnrichStatus("Mapping 8f use cases...");
     try {
       const existing = { workflowAssessment: account.workflowAssessment || "", highestOpportunity: account.highestOpportunity || "", capabilityMatch: account.capabilityMatch || "", proofPoints: account.proofPoints || "", personaValueMap: account.personaValueMap || "" };
-      const prompt = "You are a Eightfold solution architect. For \"" + (account.companyName || "this company") + "\" (industry: " + (account.industry || "unknown") + ", employees: " + (account.employees || "unknown") + "), map Eightfold use cases. EXISTING DATA:\n" + JSON.stringify(existing) + "\n\nReturn ONLY valid JSON with same keys. APPEND [Eightfold Intel] insights. Map Eightfold capabilities: Talent Acquisition (AI sourcing, matching, screening, candidate relationship management), Talent Agents (AI Interviewer, AI Interview Companion, Candidate Agent), Talent Management (internal mobility, Talent Marketplace, Career Planner, upskilling/reskilling, succession planning, skills mentoring), Resource Management (project and resource staffing), Workforce Exchange, Talent Insights (skills-based workforce planning and analytics). Use proof points: Softtek 30% faster time-to-fill, STMicroelectronics 160+ recruiter hours saved in two months, NTT DATA more than doubled employee self-nominations, deep-learning skills graph of 1.4M+ skills across 145+ countries. Map persona value: CHRO (strategic workforce planning), CFO (cost-per-hire reduction, headcount avoidance), CIO (platform consolidation, AI), TA Leader (pipeline, automation), HM (time-to-fill, quality).";
+      const prompt = "You are a 8f solution architect. For \"" + (account.companyName || "this company") + "\" (industry: " + (account.industry || "unknown") + ", employees: " + (account.employees || "unknown") + "), map 8f use cases. EXISTING DATA:\n" + JSON.stringify(existing) + "\n\nReturn ONLY valid JSON with same keys. APPEND [8f Intel] insights. Map 8f capabilities: Talent Acquisition (AI sourcing, matching, screening, candidate relationship management), Talent Agents (AI Interviewer, AI Interview Companion, Candidate Agent), Talent Management (internal mobility, Talent Marketplace, Career Planner, upskilling/reskilling, succession planning, skills mentoring), Resource Management (project and resource staffing), Workforce Exchange, Talent Insights (skills-based workforce planning and analytics). Use proof points: Softtek 30% faster time-to-fill, STMicroelectronics 160+ recruiter hours saved in two months, NTT DATA more than doubled employee self-nominations, deep-learning skills graph of 1.4M+ skills across 145+ countries. Map persona value: CHRO (strategic workforce planning), CFO (cost-per-hire reduction, headcount avoidance), CIO (platform consolidation, AI), TA Leader (pipeline, automation), HM (time-to-fill, quality).";
       const resp = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
         headers: { "Content-Type": "application/json", "x-api-key": claudeApiKey, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
@@ -7692,9 +7692,9 @@ function UseCaseMappingSection({ account, update, claudeApiKey }) {
     }),
     /*#__PURE__*/ React.createElement("div", { style: { display: "flex", gap: 6, marginBottom: 12, flexWrap: "wrap", alignItems: "center" } },
       /*#__PURE__*/ React.createElement("button", {
-        onClick: enrichWithEightfold, disabled: enriching,
+        onClick: enrichWith8f, disabled: enriching,
         style: { padding: "6px 14px", borderRadius: 6, border: "1px solid #0D9488", background: enriching ? "#E5E7EB" : "#F0FDFA", color: "#0D9488", fontSize: 11, fontWeight: 600, cursor: enriching ? "wait" : "pointer" },
-      }, enriching ? "\u23F3 Mapping..." : "\uD83E\uDDE0 Enrich with Eightfold Intel"),
+      }, enriching ? "\u23F3 Mapping..." : "\uD83E\uDDE0 Enrich with 8f Intel"),
       enrichStatus && /*#__PURE__*/ React.createElement("span", { style: { fontSize: 11, color: enrichStatus.startsWith("\u274C") ? "#DC2626" : "#0D9488", fontWeight: 500 } }, enrichStatus),
     ),
     [
@@ -7745,12 +7745,12 @@ function UseCaseMappingSection({ account, update, claudeApiKey }) {
 function BusinessChallengesSection({ account, update, claudeApiKey }) {
   const [enriching, setEnriching] = useState(false);
   const [enrichStatus, setEnrichStatus] = useState("");
-  const enrichWithEightfold = async () => {
+  const enrichWith8f = async () => {
     if (!claudeApiKey) { alert("Set your API key first"); return; }
-    setEnriching(true); setEnrichStatus("Generating Eightfold-mapped challenges...");
+    setEnriching(true); setEnrichStatus("Generating 8f-mapped challenges...");
     try {
       const existingTitles = (account.challenges || []).map(c => c.title || "").join(", ");
-      const prompt = "You are a Eightfold sales strategist. For \"" + (account.companyName || "this company") + "\" (industry: " + (account.industry || "unknown") + ", employees: " + (account.employees || "unknown") + "), generate 3-4 NEW business challenges with Eightfold solutions. EXISTING CHALLENGE TITLES (do not duplicate): " + (existingTitles || "none") + "\n\nReturn ONLY valid JSON: { \"challenges\": [{ \"severity\": \"CRITICAL/HIGH/MEDIUM\", \"title\": \"Challenge title\", \"businessChallenge\": \"Specific challenge with data\", \"solution\": \"Eightfold solution with expected metrics\", \"proofPoint\": \"Eightfold customer proof point\" }] }\n\nUse Eightfold proof points: Softtek 30% faster time-to-fill, STMicroelectronics 160+ recruiter hours saved in two months, NTT DATA more than doubled employee self-nominations. Map to Eightfold capabilities: Talent Acquisition, Talent Agents, Talent Management, Talent Marketplace, Resource Management, Workforce Exchange, Talent Insights.";
+      const prompt = "You are a 8f sales strategist. For \"" + (account.companyName || "this company") + "\" (industry: " + (account.industry || "unknown") + ", employees: " + (account.employees || "unknown") + "), generate 3-4 NEW business challenges with 8f solutions. EXISTING CHALLENGE TITLES (do not duplicate): " + (existingTitles || "none") + "\n\nReturn ONLY valid JSON: { \"challenges\": [{ \"severity\": \"CRITICAL/HIGH/MEDIUM\", \"title\": \"Challenge title\", \"businessChallenge\": \"Specific challenge with data\", \"solution\": \"8f solution with expected metrics\", \"proofPoint\": \"8f customer proof point\" }] }\n\nUse 8f proof points: Softtek 30% faster time-to-fill, STMicroelectronics 160+ recruiter hours saved in two months, NTT DATA more than doubled employee self-nominations. Map to 8f capabilities: Talent Acquisition, Talent Agents, Talent Management, Talent Marketplace, Resource Management, Workforce Exchange, Talent Insights.";
       const resp = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
         headers: { "Content-Type": "application/json", "x-api-key": claudeApiKey, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
@@ -7768,11 +7768,11 @@ function BusinessChallengesSection({ account, update, claudeApiKey }) {
         let added = 0;
         result.challenges.forEach(ch => {
           if (!ch.title || existTitlesLower.includes(ch.title.toLowerCase())) return;
-          merged.push({ severity: ch.severity || "HIGH", title: "[Eightfold] " + ch.title, businessChallenge: ch.businessChallenge || "", solution: ch.solution || "", proofPoint: ch.proofPoint || "" });
+          merged.push({ severity: ch.severity || "HIGH", title: "[8f] " + ch.title, businessChallenge: ch.businessChallenge || "", solution: ch.solution || "", proofPoint: ch.proofPoint || "" });
           added++;
         });
         update("challenges", merged);
-        setEnrichStatus("\u2705 Added " + added + " Eightfold-mapped challenges");
+        setEnrichStatus("\u2705 Added " + added + " 8f-mapped challenges");
       }
       setTimeout(() => setEnrichStatus(""), 8000);
     } catch (err) { setEnrichStatus("\u274C " + err.message); }
@@ -7806,9 +7806,9 @@ function BusinessChallengesSection({ account, update, claudeApiKey }) {
     }),
     /*#__PURE__*/ React.createElement("div", { style: { display: "flex", gap: 6, marginBottom: 12, flexWrap: "wrap", alignItems: "center" } },
       /*#__PURE__*/ React.createElement("button", {
-        onClick: enrichWithEightfold, disabled: enriching,
+        onClick: enrichWith8f, disabled: enriching,
         style: { padding: "6px 14px", borderRadius: 6, border: "1px solid #0D9488", background: enriching ? "#E5E7EB" : "#F0FDFA", color: "#0D9488", fontSize: 11, fontWeight: 600, cursor: enriching ? "wait" : "pointer" },
-      }, enriching ? "\u23F3 Generating..." : "\uD83E\uDDE0 Add Eightfold-Mapped Challenges"),
+      }, enriching ? "\u23F3 Generating..." : "\uD83E\uDDE0 Add 8f-Mapped Challenges"),
       enrichStatus && /*#__PURE__*/ React.createElement("span", { style: { fontSize: 11, color: enrichStatus.startsWith("\u274C") ? "#DC2626" : "#0D9488", fontWeight: 500 } }, enrichStatus),
     ),
     account.challenges.map((ch, i) =>
@@ -8021,12 +8021,12 @@ function CompellingEventSection({ account, update }) {
 function HyperCellSection({ account, update, claudeApiKey }) {
   const [enriching, setEnriching] = useState(false);
   const [enrichStatus, setEnrichStatus] = useState("");
-  const enrichWithEightfold = async () => {
+  const enrichWith8f = async () => {
     if (!claudeApiKey) { alert("Set your API key first"); return; }
-    setEnriching(true); setEnrichStatus("Identifying Eightfold hyper-cell opportunity...");
+    setEnriching(true); setEnrichStatus("Identifying 8f hyper-cell opportunity...");
     try {
       const context = { companyName: account.companyName || "", industry: account.industry || "", employees: account.employees || "", workforceScale: safeStr(account.workforceScale).substring(0, 500), criticalRoles: safeStr(account.criticalRoles).substring(0, 300), businessPain: safeStr(account.businessPain).substring(0, 300), whyNow: safeStr(account.whyNow).substring(0, 300), existingTitle: account.hyperCellTitle || "", existingNarrative: safeStr(account.hyperCellNarrative).substring(0, 500) };
-      const prompt = "You are a Eightfold strategic sales advisor. For \"" + context.companyName + "\", identify THE single highest-value Eightfold opportunity — the executive-level entry point. CONTEXT:\n" + JSON.stringify(context) + "\n\nReturn ONLY valid JSON:\n{\"hyperCellTitle\": \"One-sentence Eightfold opportunity title\", \"hyperCellNarrative\": \"3-4 paragraph executive narrative: business context, urgency driver, specific Eightfold solution (name the module), quantified expected impact (use real Eightfold proof points), competitive urgency, and the executive ask. This must be compelling enough for a C-suite conversation.\"}\n\nUse real Eightfold proof points: Softtek 30% faster time-to-fill, STMicroelectronics 160+ recruiter hours saved in two months, NTT DATA more than doubled employee self-nominations, a deep-learning skills graph of 1.4M+ skills and billions of talent profiles across 145+ countries, Talent Marketplace driving internal mobility, and Talent Insights enabling skills-based workforce planning. Reference the specific Eightfold capability (Talent Acquisition, Talent Management, Resource Management, Workforce Exchange, or Talent Insights) that maps to their #1 pain.";
+      const prompt = "You are a 8f strategic sales advisor. For \"" + context.companyName + "\", identify THE single highest-value 8f opportunity — the executive-level entry point. CONTEXT:\n" + JSON.stringify(context) + "\n\nReturn ONLY valid JSON:\n{\"hyperCellTitle\": \"One-sentence 8f opportunity title\", \"hyperCellNarrative\": \"3-4 paragraph executive narrative: business context, urgency driver, specific 8f solution (name the module), quantified expected impact (use real 8f proof points), competitive urgency, and the executive ask. This must be compelling enough for a C-suite conversation.\"}\n\nUse real 8f proof points: Softtek 30% faster time-to-fill, STMicroelectronics 160+ recruiter hours saved in two months, NTT DATA more than doubled employee self-nominations, a deep-learning skills graph of 1.4M+ skills and billions of talent profiles across 145+ countries, Talent Marketplace driving internal mobility, and Talent Insights enabling skills-based workforce planning. Reference the specific 8f capability (Talent Acquisition, Talent Management, Resource Management, Workforce Exchange, or Talent Insights) that maps to their #1 pain.";
       const resp = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
         headers: { "Content-Type": "application/json", "x-api-key": claudeApiKey, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
@@ -8049,7 +8049,7 @@ function HyperCellSection({ account, update, claudeApiKey }) {
         update("hyperCellNarrative", result.hyperCellNarrative);
         count++;
       }
-      setEnrichStatus("\u2705 Hyper-cell enriched with Eightfold opportunity");
+      setEnrichStatus("\u2705 Hyper-cell enriched with 8f opportunity");
       setTimeout(() => setEnrichStatus(""), 8000);
     } catch (err) { setEnrichStatus("\u274C " + err.message); }
     setEnriching(false);
@@ -8070,9 +8070,9 @@ function HyperCellSection({ account, update, claudeApiKey }) {
     ),
     /*#__PURE__*/ React.createElement("div", { style: { display: "flex", gap: 6, marginBottom: 12, flexWrap: "wrap", alignItems: "center" } },
       /*#__PURE__*/ React.createElement("button", {
-        onClick: enrichWithEightfold, disabled: enriching,
+        onClick: enrichWith8f, disabled: enriching,
         style: { padding: "6px 14px", borderRadius: 6, border: "1px solid #0D9488", background: enriching ? "#E5E7EB" : "#F0FDFA", color: "#0D9488", fontSize: 11, fontWeight: 600, cursor: enriching ? "wait" : "pointer" },
-      }, enriching ? "\u23F3 Identifying..." : "\uD83E\uDDE0 Identify Eightfold Hyper-Cell"),
+      }, enriching ? "\u23F3 Identifying..." : "\uD83E\uDDE0 Identify 8f Hyper-Cell"),
       enrichStatus && /*#__PURE__*/ React.createElement("span", { style: { fontSize: 11, color: enrichStatus.startsWith("\u274C") ? "#DC2626" : "#0D9488", fontWeight: 500 } }, enrichStatus),
     ),
     /*#__PURE__*/ React.createElement(FieldLabel, null, "Hyper-Cell Title (one sentence)"),
@@ -8160,7 +8160,7 @@ function GeoPoliSection({ account, update }) {
     /*#__PURE__*/ React.createElement(
       "p",
       { style: { fontSize: 12, color: C.muted, marginBottom: 16 } },
-      "How the Ukraine war, Middle East/Iran tensions, and shifting trade routes affect this account \u2014 and where Eightfold creates measurable opportunity.",
+      "How the Ukraine war, Middle East/Iran tensions, and shifting trade routes affect this account \u2014 and where 8f creates measurable opportunity.",
     ),
     /*#__PURE__*/ React.createElement(
       "div",
@@ -8229,29 +8229,29 @@ function GeoPoliSection({ account, update }) {
         /*#__PURE__*/ React.createElement(
           "span",
           { style: { fontWeight: 700, fontSize: 14, color: "#00BFA5" } },
-          "Eightfold Geo-Political Play \u2014 Measurable Business Outcome",
+          "8f Geo-Political Play \u2014 Measurable Business Outcome",
         ),
       ),
       /*#__PURE__*/ React.createElement(
         "p",
         { style: { fontSize: 12, color: "#94A3B8", marginBottom: 12 } },
-        "How does Eightfold specifically enable this company to win in geopolitically-driven growth areas? Define the outcome in metrics.",
+        "How does 8f specifically enable this company to win in geopolitically-driven growth areas? Define the outcome in metrics.",
       ),
       /*#__PURE__*/ React.createElement(TextArea, {
         value: account.phenomGeoPlay,
         onChange: (v) => update("phenomGeoPlay", v),
         placeholder:
-          "Specific Eightfold capability \u2192 Geo-driven growth area \u2192 Measurable outcome (e.g. 'AI-powered talent pipeline for hydrogen engineers reduces TTF from 90 to 45 days, enabling RWE to staff 3 offshore wind farms on schedule \u2014 worth \u20AC200M in deployment revenue that would otherwise slip 6-12 months...')",
+          "Specific 8f capability \u2192 Geo-driven growth area \u2192 Measurable outcome (e.g. 'AI-powered talent pipeline for hydrogen engineers reduces TTF from 90 to 45 days, enabling RWE to staff 3 offshore wind farms on schedule \u2014 worth \u20AC200M in deployment revenue that would otherwise slip 6-12 months...')",
         rows: 5,
       }),
     ),
   );
-} // ─── Eightfold Proof Points Database (Industry-Matched Customer Stories) ─────────
+} // ─── 8f Proof Points Database (Industry-Matched Customer Stories) ─────────
 const EIGHTFOLD_PROOF_POINTS = [
-  { company: "STMicroelectronics", industry: "Semiconductors / Manufacturing", tags: ["Manufacturing","Semiconductors","Technology","Industrial"], headline: "160+ Recruiter Hours Saved in Two Months", metrics: ["160+ recruiter hours saved in the first two months","AI-driven sourcing, matching and screening at scale","Skills-based hiring across a global engineering workforce"], source: "Eightfold Customer Story", url: "https://eightfold.ai/customers/customer-stories/" },
-  { company: "NTT DATA", industry: "IT Services / Technology", tags: ["Technology","IT Services","Professional Services","Consulting"], headline: "Doubled Internal Mobility Engagement", metrics: ["More than doubled employee self-nominations","Higher internal referral rates","Skills-based internal mobility and talent marketplace"], source: "Eightfold Customer Story", url: "https://eightfold.ai/customers/customer-stories/" },
-  { company: "Softtek", industry: "IT Services / Technology", tags: ["Technology","IT Services","Professional Services"], headline: "30% Faster Time-to-Fill", metrics: ["30% faster time-to-fill","AI matching across a broader talent pool","Reduced manual sourcing effort for recruiters"], source: "Eightfold Customer Story", url: "https://eightfold.ai/customers/customer-stories/" },
-  { company: "Global Enterprise Adoption", industry: "Cross-Industry", tags: ["Cross-Industry","Enterprise","Retail","Consumer Goods","Financial Services","Telecommunications","Energy","Automotive"], headline: "Trusted by Global Enterprises", metrics: ["Customers include Vodafone, Bayer, Citi, HSBC, S&P Global, Schneider Electric, Deutsche Telekom, Ericsson, Wipro and Salesforce","Recognition: G2 Enterprise Grid Leader (2025), HR Executive Top HR Product (2025), SAP Pinnacle Award (2023), Fast Company World Changing Ideas (2021)"], source: "Eightfold Customers and Awards", url: "https://eightfold.ai/customers/" },
+  { company: "STMicroelectronics", industry: "Semiconductors / Manufacturing", tags: ["Manufacturing","Semiconductors","Technology","Industrial"], headline: "160+ Recruiter Hours Saved in Two Months", metrics: ["160+ recruiter hours saved in the first two months","AI-driven sourcing, matching and screening at scale","Skills-based hiring across a global engineering workforce"], source: "8f Customer Story", url: "https://eightfold.ai/customers/customer-stories/" },
+  { company: "NTT DATA", industry: "IT Services / Technology", tags: ["Technology","IT Services","Professional Services","Consulting"], headline: "Doubled Internal Mobility Engagement", metrics: ["More than doubled employee self-nominations","Higher internal referral rates","Skills-based internal mobility and talent marketplace"], source: "8f Customer Story", url: "https://eightfold.ai/customers/customer-stories/" },
+  { company: "Softtek", industry: "IT Services / Technology", tags: ["Technology","IT Services","Professional Services"], headline: "30% Faster Time-to-Fill", metrics: ["30% faster time-to-fill","AI matching across a broader talent pool","Reduced manual sourcing effort for recruiters"], source: "8f Customer Story", url: "https://eightfold.ai/customers/customer-stories/" },
+  { company: "Global Enterprise Adoption", industry: "Cross-Industry", tags: ["Cross-Industry","Enterprise","Retail","Consumer Goods","Financial Services","Telecommunications","Energy","Automotive"], headline: "Trusted by Global Enterprises", metrics: ["Customers include Vodafone, Bayer, Citi, HSBC, S&P Global, Schneider Electric, Deutsche Telekom, Ericsson, Wipro and Salesforce","Recognition: G2 Enterprise Grid Leader (2025), HR Executive Top HR Product (2025), SAP Pinnacle Award (2023), Fast Company World Changing Ideas (2021)"], source: "8f Customers and Awards", url: "https://eightfold.ai/customers/" },
 ]; // ─── Industry matching logic ─────────────────────────────────────────────────
 function matchProofPoints(accountIndustry) {
   if (!accountIndustry) return EIGHTFOLD_PROOF_POINTS;
@@ -8282,13 +8282,13 @@ function ProofPointsSection({ account, update }) {
     null,
     /*#__PURE__*/ React.createElement(SectionHeader, {
       title: "Proof Points",
-      badge: "Eightfold Customer Stories",
+      badge: "8f Customer Stories",
       badgeColor: "#7C3AED",
     }),
     /*#__PURE__*/ React.createElement(
       "p",
       { style: { fontSize: 12, color: C.muted, marginBottom: 16 } },
-      "Industry-matched Eightfold customer stories and results. Stories are auto-ranked by relevance to ",
+      "Industry-matched 8f customer stories and results. Stories are auto-ranked by relevance to ",
       /*#__PURE__*/ React.createElement("strong", null, account.industry || "this account's industry"),
       ".",
     ),
@@ -8305,7 +8305,7 @@ function ProofPointsSection({ account, update }) {
         value: account.proofPoint || "",
         onChange: (v) => update("proofPoint", v),
         placeholder:
-          "Add a custom proof point specific to this account. For example: 'A leading global enterprise deployed Eightfold and more than doubled internal mobility applications.'",
+          "Add a custom proof point specific to this account. For example: 'A leading global enterprise deployed 8f and more than doubled internal mobility applications.'",
         rows: 3,
       }),
     ),
@@ -8459,7 +8459,7 @@ function ProofPointsSection({ account, update }) {
         /*#__PURE__*/ React.createElement(
           "span",
           { style: { fontWeight: 700, fontSize: 14, color: "#00BFA5" } },
-          "Eightfold: verified customer results and recognition",
+          "8f: verified customer results and recognition",
         ),
       ),
       /*#__PURE__*/ React.createElement(
@@ -8773,9 +8773,9 @@ function OutreachSection({ account, update, claudeApiKey = "" }) {
       steps: 5,
       description: "Initial outreach to new prospect: intro → value prop → case study → follow-up → break-up",
       prompts: [
-        "Write a cold introduction email (80-120 words) from a Eightfold sales rep to {exec_name}, {exec_title} at {company}. Reference their specific challenge: {challenge}. Mention a relevant insight about their company. Be concise, professional, end with a soft CTA (asking for 15 min). No fluff.",
-        "Write a value proposition follow-up email (80-120 words) to {exec_name} at {company}. Reference the first email. Present how Eightfold specifically solves: {pain_point}. Include one quantified outcome. End with CTA for a brief call.",
-        "Write a case study email (80-120 words) to {exec_name} at {company}. Reference a proof point: {proof_point}. Show how a similar company achieved results with Eightfold. Connect it to {company}'s specific situation. End with soft CTA.",
+        "Write a cold introduction email (80-120 words) from a 8f sales rep to {exec_name}, {exec_title} at {company}. Reference their specific challenge: {challenge}. Mention a relevant insight about their company. Be concise, professional, end with a soft CTA (asking for 15 min). No fluff.",
+        "Write a value proposition follow-up email (80-120 words) to {exec_name} at {company}. Reference the first email. Present how 8f specifically solves: {pain_point}. Include one quantified outcome. End with CTA for a brief call.",
+        "Write a case study email (80-120 words) to {exec_name} at {company}. Reference a proof point: {proof_point}. Show how a similar company achieved results with 8f. Connect it to {company}'s specific situation. End with soft CTA.",
         "Write a gentle follow-up email (60-80 words) to {exec_name} at {company}. Reference previous emails without being pushy. Add one new insight about their industry. Ask if timing is better next quarter.",
         "Write a professional break-up email (60-80 words) to {exec_name} at {company}. Acknowledge they're busy. Leave the door open. Mention you'll share relevant industry insights periodically. Keep it classy.",
       ],
@@ -9818,19 +9818,19 @@ Return ONLY valid JSON array (no markdown):
 }
 
 // ─── Dashboard Home Screen ─────────────────────────────────────────────────────
-// ─── BU Growth & Eightfold Product Match Section ────────────────────────────────
+// ─── BU Growth & 8f Product Match Section ────────────────────────────────
 function BUGrowthEightfoldSection({ account, update, claudeApiKey }) {
   var _st1 = useState(false), enriching = _st1[0], setEnriching = _st1[1];
   var _st2 = useState(""), enrichStatus = _st2[0], setEnrichStatus = _st2[1];
 
   var enrichBUData = async function() {
     if (!claudeApiKey) { alert("Set your API key first"); return; }
-    setEnriching(true); setEnrichStatus("Analyzing fastest-growing BU and Eightfold product fit...");
+    setEnriching(true); setEnrichStatus("Analyzing fastest-growing BU and 8f product fit...");
     try {
       var resp = await fetchWithRetry("https://api.anthropic.com/v1/messages", {
         method: "POST",
         headers: { "Content-Type": "application/json", "x-api-key": claudeApiKey, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
-        body: JSON.stringify({ model: "claude-sonnet-4-6", tools: [{ type: "web_search_20250305", name: "web_search", max_uses: 5 }], max_tokens: 9000, system: "You are a JSON API endpoint. You ONLY output valid JSON objects. Never include any text, explanation, or commentary outside the JSON.", messages: [{ role: "user", content: "Research \"" + account.companyName + "\" (" + (account.industry || "unknown") + "). Today is " + new Date().toISOString().split("T")[0] + ". Use ONLY current-year data and publicly available information.\n\nDEEP ACCOUNT INTELLIGENCE ALREADY GATHERED:\n- At a Glance: " + safeStr(account.atAGlance).substring(0, 400) + "\n- Business Segments: " + safeStr(account.businessSegments).substring(0, 400) + "\n- CEO Priorities: " + safeStr(account.ceoPriorities).substring(0, 300) + "\n- Revenue & Growth: " + safeStr(account.revenueGrowth).substring(0, 300) + "\n- Strategy: " + safeStr(account.strategy).substring(0, 300) + "\n- Key Signals: " + safeStr(account.keySignals).substring(0, 400) + "\n- Challenges: " + safeStr(account.challenges).substring(0, 400) + "\n- Workforce Strategy: " + safeStr(account.workforceStrategy).substring(0, 300) + "\n- Hiring Trends: " + safeStr(account.hiringTrends).substring(0, 300) + "\n- Employees: " + safeStr(account.employees) + "\n- Open Roles: " + safeStr(account.openRoles) + "\n- Problems: " + safeStr(account.problems).substring(0, 300) + "\n- Use Cases: " + safeStr(account.useCases).substring(0, 300) + "\n\nIMPORTANT: Cross-reference ALL the above intelligence. Your BU analysis must be CONSISTENT with the challenges, strategy, and signals already identified. Reference specific facts from this intelligence to ground your analysis.\n\nEightfold's products: Talent Acquisition (AI sourcing, matching, screening, scheduling), Talent Management (internal mobility, career hub, succession, skills development), Talent Flex (contingent and gig workforce), Resource Management (project staffing, bench optimisation), and Talent Insights (workforce planning, skills-gap analytics, DEI) — all powered by a deep-learning global skills graph.\n\nReturn this exact JSON structure:\n{\n  \"fastestGrowingBU\": \"Name the SPECIFIC fastest-growing BU at " + account.companyName + " with growth rate, revenue, and strategic importance. Must be grounded in their actual publicly reported segments and strategy.\",\n  \"buGrowthDrivers\": \"What drives this BU's growth — cite specific recent acquisitions, product launches, or market moves from " + new Date().getFullYear() + ". Connect to the key signals and strategy above.\",\n  \"buTalentNeeds\": \"What talent this BU urgently needs — specific roles, volumes, skill sets. Reference their actual open roles and hiring trends above.\",\n  \"phenomProductMatch\": \"Map 4-5 SPECIFIC Eightfold products to THIS company's SPECIFIC challenges listed above: '[Product] → [Their specific challenge/use case] → [Expected impact with numbers]'\",\n  \"phenomQuickWins\": \"3 concrete things Eightfold delivers in FIRST 90 DAYS that directly address the challenges identified above. Include timelines and metrics.\",\n  \"phenomROIStory\": \"12-month ROI narrative using their actual employee count (" + safeStr(account.employees) + ") and open roles (" + safeStr(account.openRoles) + "). Be specific with $ amounts.\",\n  \"wowInsights\": \"5 jaw-drop insights that connect dots across the intelligence above in ways the CHRO wouldn't expect — each 2-3 sentences with specific data from their public filings, earnings calls, or news. Include: (1) recent event most missed, (2) competitive threat to their talent brand, (3) hidden cost they're not tracking, (4) connection between two of their initiatives creating urgency, (5) prediction for next 6-12 months\"\n}" }] }),
+        body: JSON.stringify({ model: "claude-sonnet-4-6", tools: [{ type: "web_search_20250305", name: "web_search", max_uses: 5 }], max_tokens: 9000, system: "You are a JSON API endpoint. You ONLY output valid JSON objects. Never include any text, explanation, or commentary outside the JSON.", messages: [{ role: "user", content: "Research \"" + account.companyName + "\" (" + (account.industry || "unknown") + "). Today is " + new Date().toISOString().split("T")[0] + ". Use ONLY current-year data and publicly available information.\n\nDEEP ACCOUNT INTELLIGENCE ALREADY GATHERED:\n- At a Glance: " + safeStr(account.atAGlance).substring(0, 400) + "\n- Business Segments: " + safeStr(account.businessSegments).substring(0, 400) + "\n- CEO Priorities: " + safeStr(account.ceoPriorities).substring(0, 300) + "\n- Revenue & Growth: " + safeStr(account.revenueGrowth).substring(0, 300) + "\n- Strategy: " + safeStr(account.strategy).substring(0, 300) + "\n- Key Signals: " + safeStr(account.keySignals).substring(0, 400) + "\n- Challenges: " + safeStr(account.challenges).substring(0, 400) + "\n- Workforce Strategy: " + safeStr(account.workforceStrategy).substring(0, 300) + "\n- Hiring Trends: " + safeStr(account.hiringTrends).substring(0, 300) + "\n- Employees: " + safeStr(account.employees) + "\n- Open Roles: " + safeStr(account.openRoles) + "\n- Problems: " + safeStr(account.problems).substring(0, 300) + "\n- Use Cases: " + safeStr(account.useCases).substring(0, 300) + "\n\nIMPORTANT: Cross-reference ALL the above intelligence. Your BU analysis must be CONSISTENT with the challenges, strategy, and signals already identified. Reference specific facts from this intelligence to ground your analysis.\n\n8f's products: Talent Acquisition (AI sourcing, matching, screening, scheduling), Talent Management (internal mobility, career hub, succession, skills development), Talent Flex (contingent and gig workforce), Resource Management (project staffing, bench optimisation), and Talent Insights (workforce planning, skills-gap analytics, DEI) — all powered by a deep-learning global skills graph.\n\nReturn this exact JSON structure:\n{\n  \"fastestGrowingBU\": \"Name the SPECIFIC fastest-growing BU at " + account.companyName + " with growth rate, revenue, and strategic importance. Must be grounded in their actual publicly reported segments and strategy.\",\n  \"buGrowthDrivers\": \"What drives this BU's growth — cite specific recent acquisitions, product launches, or market moves from " + new Date().getFullYear() + ". Connect to the key signals and strategy above.\",\n  \"buTalentNeeds\": \"What talent this BU urgently needs — specific roles, volumes, skill sets. Reference their actual open roles and hiring trends above.\",\n  \"phenomProductMatch\": \"Map 4-5 SPECIFIC 8f products to THIS company's SPECIFIC challenges listed above: '[Product] → [Their specific challenge/use case] → [Expected impact with numbers]'\",\n  \"phenomQuickWins\": \"3 concrete things 8f delivers in FIRST 90 DAYS that directly address the challenges identified above. Include timelines and metrics.\",\n  \"phenomROIStory\": \"12-month ROI narrative using their actual employee count (" + safeStr(account.employees) + ") and open roles (" + safeStr(account.openRoles) + "). Be specific with $ amounts.\",\n  \"wowInsights\": \"5 jaw-drop insights that connect dots across the intelligence above in ways the CHRO wouldn't expect — each 2-3 sentences with specific data from their public filings, earnings calls, or news. Include: (1) recent event most missed, (2) competitive threat to their talent brand, (3) hidden cost they're not tracking, (4) connection between two of their initiatives creating urgency, (5) prediction for next 6-12 months\"\n}" }] }),
       }, 3, function(msg) { setEnrichStatus(msg); });
       var data = await resp.json();
       var rawText = (apiText(data) || "");
@@ -9843,7 +9843,7 @@ function BUGrowthEightfoldSection({ account, update, claudeApiKey }) {
           else { update(f, parsed[f]); }
         }
       });
-      setEnrichStatus("Done! BU growth intel and Eightfold match updated.");
+      setEnrichStatus("Done! BU growth intel and 8f match updated.");
     } catch(e) { setEnrichStatus("Error: " + e.message); }
     setEnriching(false);
   };
@@ -9861,14 +9861,14 @@ function BUGrowthEightfoldSection({ account, update, claudeApiKey }) {
   };
 
   return React.createElement("div", null,
-    React.createElement(SectionHeader, { title: "BU Growth & Eightfold Match", badge: "Sales Weapon" }),
+    React.createElement(SectionHeader, { title: "BU Growth & 8f Match", badge: "Sales Weapon" }),
 
     // Enrich button
     React.createElement("div", { style: { display: "flex", gap: 10, marginBottom: 16, alignItems: "center", flexWrap: "wrap" } },
       React.createElement("button", {
         onClick: enrichBUData, disabled: enriching,
         style: { padding: "8px 16px", borderRadius: 8, border: "none", background: enriching ? "#9CA3AF" : "linear-gradient(135deg, #7C3AED, #3B82F6)", color: "#fff", fontWeight: 700, fontSize: 12, cursor: enriching ? "not-allowed" : "pointer" },
-      }, enriching ? "\u23F3 Analyzing..." : "\uD83D\uDE80 AI-Generate BU Intel & Eightfold Match"),
+      }, enriching ? "\u23F3 Analyzing..." : "\uD83D\uDE80 AI-Generate BU Intel & 8f Match"),
       enrichStatus && React.createElement("span", { style: { fontSize: 11, color: enrichStatus.includes("Error") ? "#DC2626" : "#0D9488" } }, enrichStatus),
     ),
 
@@ -9877,11 +9877,11 @@ function BUGrowthEightfoldSection({ account, update, claudeApiKey }) {
     React.createElement(Card, { icon: "\u26A1", title: "BU Growth Drivers", color: "#3B82F6", field: "buGrowthDrivers", tag: "Market Intel", placeholder: "What's driving this growth? Acquisitions, product launches, market expansion...", rows: 3 }),
     React.createElement(Card, { icon: "\uD83D\uDC65", title: "BU Talent Needs", color: "#0D9488", field: "buTalentNeeds", tag: "Hiring Signal", placeholder: "What talent does this BU urgently need? Specific roles, volume, skill sets...", rows: 3 }),
 
-    // Eightfold Product Match
-    React.createElement("div", { style: { margin: "20px 0 10px", fontSize: 14, fontWeight: 700, color: "#1E293B" } }, "\uD83C\uDFAF Eightfold Product \u2192 Company Match"),
-    React.createElement(Card, { icon: "\uD83E\uDDE9", title: "Product-to-Need Mapping", color: "#DC2626", field: "phenomProductMatch", tag: "Kill Sheet", placeholder: "[Eightfold Product] \u2192 [Their specific use case] \u2192 [Expected impact]\nExample: Eightfold Internal Mobility \u2192 Redeploy 200 displaced workers into growing Cloud BU \u2192 save $4M external hiring", rows: 6 }),
+    // 8f Product Match
+    React.createElement("div", { style: { margin: "20px 0 10px", fontSize: 14, fontWeight: 700, color: "#1E293B" } }, "\uD83C\uDFAF 8f Product \u2192 Company Match"),
+    React.createElement(Card, { icon: "\uD83E\uDDE9", title: "Product-to-Need Mapping", color: "#DC2626", field: "phenomProductMatch", tag: "Kill Sheet", placeholder: "[8f Product] \u2192 [Their specific use case] \u2192 [Expected impact]\nExample: 8f Internal Mobility \u2192 Redeploy 200 displaced workers into growing Cloud BU \u2192 save $4M external hiring", rows: 6 }),
     React.createElement(Card, { icon: "\u23F1\uFE0F", title: "90-Day Quick Wins", color: "#F59E0B", field: "phenomQuickWins", tag: "First Impact", placeholder: "3 concrete deliverables in the first 90 days with specific timelines and metrics...", rows: 4 }),
-    React.createElement(Card, { icon: "\uD83D\uDCB0", title: "12-Month ROI Story", color: "#10B981", field: "phenomROIStory", tag: "Business Case", placeholder: "With [X employees] and [Y open roles], Eightfold projects: X% time-to-fill reduction ($Y savings)...", rows: 4 }),
+    React.createElement(Card, { icon: "\uD83D\uDCB0", title: "12-Month ROI Story", color: "#10B981", field: "phenomROIStory", tag: "Business Case", placeholder: "With [X employees] and [Y open roles], 8f projects: X% time-to-fill reduction ($Y savings)...", rows: 4 }),
 
     // Wow Insights
     React.createElement("div", { style: { margin: "20px 0 10px", fontSize: 14, fontWeight: 700, color: "#1E293B" } }, "\uD83E\uDD2F \"How Do You Know That?\" Insights"),
@@ -9906,7 +9906,7 @@ function BULeadersSection({ account, update, claudeApiKey }) {
       var resp = await fetchWithRetry("https://api.anthropic.com/v1/messages", {
         method: "POST",
         headers: { "Content-Type": "application/json", "x-api-key": claudeApiKey, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
-        body: JSON.stringify({ model: "claude-sonnet-4-6", tools: [{ type: "web_search_20250305", name: "web_search", max_uses: 5 }], max_tokens: 9000, system: "You are a JSON API endpoint with a 90% ACCURACY MANDATE. You ONLY output valid JSON objects. Never include any text outside the JSON. For EVERY person you include, you must have verified them against at least 2 public sources (LinkedIn, Xing, company website, press). Never guess or fabricate names.", messages: [{ role: "user", content: "Research current Business Unit leaders at \"" + account.companyName + "\" (" + (account.industry || "unknown") + "). Today is " + new Date().toISOString().split("T")[0] + ".\n\nInclude: division/BU heads, SVPs running business lines, procurement/vendor management leaders, and anyone with P&L responsibility.\n\n90% ACCURACY VERIFICATION PROTOCOL:\n1. For EACH person, verify via: (a) LinkedIn: \"{name}\" site:linkedin.com \"" + account.companyName + "\" (b) Xing: \"{name}\" site:xing.com \"" + account.companyName + "\" (c) Company website: \"" + account.companyName + "\" Vorstand OR management board (d) Departure check: \"{name}\" leaves OR verlässt \"" + account.companyName + "\"\n2. ONLY include if confirmed via AT LEAST 2 sources. State sources in mandate field: 'VERIFIED: [source1] + [source2]'\n3. If only 1 source, prefix name with '⚠️ ' and note 'SINGLE SOURCE'\n4. If ZERO sources confirm → DO NOT INCLUDE. Never guess names.\n5. Search for departures explicitly — anyone who left in 24 months must NOT be included.\n6. Better to return 2-3 verified leaders than 6 guessed names.\n\nReturn this exact JSON structure:\n{\"buLeaders\": [{\"name\": \"Full name (VERIFIED)\", \"title\": \"Current title\", \"bu\": \"Business Unit name\", \"mandate\": \"VERIFIED: [LinkedIn + company website]. Their strategic mandate\", \"talentChallenge\": \"Their hiring challenge\", \"phenomAngle\": \"How to position Eightfold\", \"linkedinUrl\": \"Actual LinkedIn URL or empty string\"}]}" }] }),
+        body: JSON.stringify({ model: "claude-sonnet-4-6", tools: [{ type: "web_search_20250305", name: "web_search", max_uses: 5 }], max_tokens: 9000, system: "You are a JSON API endpoint with a 90% ACCURACY MANDATE. You ONLY output valid JSON objects. Never include any text outside the JSON. For EVERY person you include, you must have verified them against at least 2 public sources (LinkedIn, Xing, company website, press). Never guess or fabricate names.", messages: [{ role: "user", content: "Research current Business Unit leaders at \"" + account.companyName + "\" (" + (account.industry || "unknown") + "). Today is " + new Date().toISOString().split("T")[0] + ".\n\nInclude: division/BU heads, SVPs running business lines, procurement/vendor management leaders, and anyone with P&L responsibility.\n\n90% ACCURACY VERIFICATION PROTOCOL:\n1. For EACH person, verify via: (a) LinkedIn: \"{name}\" site:linkedin.com \"" + account.companyName + "\" (b) Xing: \"{name}\" site:xing.com \"" + account.companyName + "\" (c) Company website: \"" + account.companyName + "\" Vorstand OR management board (d) Departure check: \"{name}\" leaves OR verlässt \"" + account.companyName + "\"\n2. ONLY include if confirmed via AT LEAST 2 sources. State sources in mandate field: 'VERIFIED: [source1] + [source2]'\n3. If only 1 source, prefix name with '⚠️ ' and note 'SINGLE SOURCE'\n4. If ZERO sources confirm → DO NOT INCLUDE. Never guess names.\n5. Search for departures explicitly — anyone who left in 24 months must NOT be included.\n6. Better to return 2-3 verified leaders than 6 guessed names.\n\nReturn this exact JSON structure:\n{\"buLeaders\": [{\"name\": \"Full name (VERIFIED)\", \"title\": \"Current title\", \"bu\": \"Business Unit name\", \"mandate\": \"VERIFIED: [LinkedIn + company website]. Their strategic mandate\", \"talentChallenge\": \"Their hiring challenge\", \"phenomAngle\": \"How to position 8f\", \"linkedinUrl\": \"Actual LinkedIn URL or empty string\"}]}" }] }),
       }, 3, function(msg) { setEnrichStatus(msg); });
       var data = await resp.json();
       var rawText = (apiText(data) || "");
@@ -9980,7 +9980,7 @@ function BULeadersSection({ account, update, claudeApiKey }) {
         style: { width: "100%", padding: "8px 10px", border: "1px solid " + C.border, borderRadius: 6, fontSize: 12, fontFamily: "inherit", marginTop: 8, boxSizing: "border-box", resize: "vertical" } }),
       React.createElement("textarea", { value: newLeader.talentChallenge, onChange: function(e) { setNewLeader(function(prev) { return { ...prev, talentChallenge: e.target.value }; }); }, placeholder: "Their talent/hiring challenge...", rows: 2,
         style: { width: "100%", padding: "8px 10px", border: "1px solid " + C.border, borderRadius: 6, fontSize: 12, fontFamily: "inherit", marginTop: 8, boxSizing: "border-box", resize: "vertical" } }),
-      React.createElement("textarea", { value: newLeader.phenomAngle, onChange: function(e) { setNewLeader(function(prev) { return { ...prev, phenomAngle: e.target.value }; }); }, placeholder: "How to position Eightfold to this person...", rows: 2,
+      React.createElement("textarea", { value: newLeader.phenomAngle, onChange: function(e) { setNewLeader(function(prev) { return { ...prev, phenomAngle: e.target.value }; }); }, placeholder: "How to position 8f to this person...", rows: 2,
         style: { width: "100%", padding: "8px 10px", border: "1px solid " + C.border, borderRadius: 6, fontSize: 12, fontFamily: "inherit", marginTop: 8, boxSizing: "border-box", resize: "vertical" } }),
       React.createElement("button", { onClick: addNewLeader, style: { marginTop: 10, padding: "8px 20px", borderRadius: 6, border: "none", background: C.teal, color: "#fff", fontWeight: 700, fontSize: 12, cursor: "pointer" } }, "\u2713 Add Leader"),
     ),
@@ -10016,7 +10016,7 @@ function BULeadersSection({ account, update, claudeApiKey }) {
             [
               { label: "\uD83C\uDFAF Mandate & KPIs", field: "mandate", ph: "Strategic mandate..." },
               { label: "\uD83D\uDC65 Talent Challenge", field: "talentChallenge", ph: "Their hiring/talent challenge..." },
-              { label: "\uD83E\uDDE9 Eightfold Angle", field: "phenomAngle", ph: "How to position Eightfold to this person..." },
+              { label: "\uD83E\uDDE9 8f Angle", field: "phenomAngle", ph: "How to position 8f to this person..." },
             ].map(function(f) {
               return React.createElement("div", { key: f.field },
                 React.createElement("div", { style: { fontSize: 10, fontWeight: 600, color: "#6B7280", marginBottom: 3, textTransform: "uppercase", letterSpacing: 0.5 } }, f.label),
@@ -10313,7 +10313,7 @@ function OnePagerSection({ account, setActiveSection, setActiveSuperSection }) {
       ".sec p{margin:0 0 8px;font-size:13px;white-space:pre-wrap}.pill{display:inline-block;font-size:12px;font-weight:700;padding:4px 10px;border-radius:20px;background:#F1F5F9;margin-right:8px}" +
       ".foot{margin-top:26px;border-top:1px solid #E5E7EB;padding-top:10px;color:#6B7280;font-size:10px;text-align:center}</style></head><body>" +
       "<h1>" + esc(account.companyName || "Account") + "</h1>" +
-      "<div class='sub'>" + esc(account.industry || "") + (account.priority ? " · " + esc(account.priority) + " priority" : "") + " · Eightfold Talent Intelligence</div>" +
+      "<div class='sub'>" + esc(account.industry || "") + (account.priority ? " · " + esc(account.priority) + " priority" : "") + " · 8f Talent Intelligence</div>" +
       "<div>" + (account.oppFit ? "<span class='pill'>" + esc(account.oppFit) + "</span>" : "") + (account.oppTiming ? "<span class='pill'>" + esc(account.oppTiming) + "</span>" : "") + (account.salesCycle ? "<span class='pill'>" + esc(account.salesCycle) + " month cycle</span>" : "") + "</div>" +
       "<div class='band'>" +
       "<div class='kpi'><div class='l'>Opportunity score</div><div class='v'>" + (score != null ? score + " / 100" : "—") + "</div></div>" +
@@ -10359,7 +10359,7 @@ function OnePagerSection({ account, setActiveSection, setActiveSuperSection }) {
     React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12, marginBottom: 14 } },
       React.createElement("div", null,
         React.createElement("div", { style: { fontSize: 24, fontWeight: 800, color: C.text, lineHeight: 1.1 } }, account.companyName || "Account"),
-        React.createElement("div", { style: { fontSize: 13, color: C.muted, marginTop: 3 } }, (account.industry || "No industry") + (account.priority ? " · " + account.priority + " priority" : "") + " · Eightfold Talent Intelligence")
+        React.createElement("div", { style: { fontSize: 13, color: C.muted, marginTop: 3 } }, (account.industry || "No industry") + (account.priority ? " · " + account.priority + " priority" : "") + " · 8f Talent Intelligence")
       ),
       React.createElement("button", { onClick: printPage, style: { padding: "9px 16px", borderRadius: 8, border: "1px solid " + C.border, background: C.card, color: C.text, fontFamily: "inherit", fontSize: 13, fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap" } }, "🖨 Print / Save as PDF")
     ),
@@ -10552,7 +10552,7 @@ function DashboardHome({ accounts, completionScore, selectAccount, setActiveSect
 
     expandedCard === "attention" && React.createElement("div", { style: { background: "#fff", border: "1px solid #E5E7EB", borderRadius: 12, padding: 16, marginBottom: 16, maxHeight: 300, overflowY: "auto" } },
       React.createElement("div", { style: { fontSize: 13, fontWeight: 700, color: "#1E293B", marginBottom: 10 } }, "\u26A0\uFE0F Needs Attention \u2014 Readiness Below 30%"),
-      React.createElement("div", { style: { fontSize: 11, color: "#6B7280", marginBottom: 10 } }, "These accounts lack core intelligence. Run Intel Refresh or upload Eightfold/Gong data to fill gaps."),
+      React.createElement("div", { style: { fontSize: 11, color: "#6B7280", marginBottom: 10 } }, "These accounts lack core intelligence. Run Intel Refresh or upload 8f/Gong data to fill gaps."),
       needsAttention.length === 0
         ? React.createElement("div", { style: { textAlign: "center", padding: 20, color: "#10B981", fontSize: 13 } }, "\u2705 All accounts above 30%!")
         : needsAttention.map(function(a) { return accRow(a, "att"); })
@@ -10787,7 +10787,7 @@ const SUPER_SECTIONS = [
     { id: "mutualplan", label: "Mutual Success Plan" },
   ]},
   { id: "opportunity", label: "Pain & Opportunity", icon: "\uD83D\uDD0D", children: [
-    { id: "bugrowth", label: "BU Growth & Eightfold" },
+    { id: "bugrowth", label: "BU Growth & 8f" },
     { id: "buleaders", label: "BU Leaders" },
     { id: "problems", label: "Problems" },
     { id: "usecases", label: "Use Cases" },
@@ -11107,7 +11107,7 @@ function ProspectDashboard() {
           body: JSON.stringify({
             model: "claude-sonnet-4-6",
             max_tokens: Math.max(maxTokens || 2000, 12000),
-            system: "You are a sales-intelligence researcher for Eightfold, which sells an AI-native talent intelligence platform, and you have live web search. Follow these rules strictly. (1) COMPANY FOCUS: every field must describe how Eightfold's own product (an AI-native talent intelligence platform) helps THIS specific prospect. Frame all value strictly in terms of Eightfold's real capabilities. Do not borrow terminology, use cases, or metrics from other vendor categories, and do not invent capabilities Eightfold does not offer. (2) VERIFY: use web_search to confirm every person, job title, leadership change, news item and figure before you write it, and exclude anyone you cannot confirm is currently in that exact role this year. (3) STYLE: write each description as clear, well-structured prose in full sentences and short paragraphs, using a blank line between separate ideas. Never use the em dash character anywhere in your output; use commas, colons, or full stops instead. (4) COMPLETE: fill EVERY field in the requested JSON with specific, substantive content grounded in this prospect, and never leave brackets, template markers, or values like X percent. Output ONLY the final JSON object.",
+            system: "You are a sales-intelligence researcher for 8f, which sells an AI-native talent intelligence platform, and you have live web search. Follow these rules strictly. (1) COMPANY FOCUS: every field must describe how 8f's own product (an AI-native talent intelligence platform) helps THIS specific prospect. Frame all value strictly in terms of 8f's real capabilities. Do not borrow terminology, use cases, or metrics from other vendor categories, and do not invent capabilities 8f does not offer. (2) VERIFY: use web_search to confirm every person, job title, leadership change, news item and figure before you write it, and exclude anyone you cannot confirm is currently in that exact role this year. (3) STYLE: write each description as clear, well-structured prose in full sentences and short paragraphs, using a blank line between separate ideas. Never use the em dash character anywhere in your output; use commas, colons, or full stops instead. (4) COMPLETE: fill EVERY field in the requested JSON with specific, substantive content grounded in this prospect, and never leave brackets, template markers, or values like X percent. Output ONLY the final JSON object.",
             messages: [{ role: "user", content: prompt }],
             tools: [{ type: "web_search_20250305", name: "web_search", max_uses: 5 }]
           })
@@ -11273,7 +11273,7 @@ INCLUSION RULES:
         // Calls 1-3 are independent — run them concurrently to cut new-account time ~3x
         const [d1, d2, d3] = await Promise.all([d1p, d2p, d3p]);
 
-        // --- CALL 4: Fastest Growing BU, Eightfold Product Match, BU Leaders, Wow Insights ---
+        // --- CALL 4: Fastest Growing BU, 8f Product Match, BU Leaders, Wow Insights ---
         // Build context from Calls 1-3 results + existing account data for maximum accuracy
         const c4ctx = {
           atAGlance: safeStr(d1.atAGlance || acc.atAGlance).substring(0, 300),
@@ -11306,19 +11306,19 @@ DEEP ACCOUNT INTELLIGENCE ALREADY GATHERED:
 
 CRITICAL: Cross-reference ALL the above intelligence. Your analysis must be CONSISTENT with the challenges, strategy, signals, and segments above. Reference specific facts to ground every claim.
 
-Eightfold's products: Talent Acquisition (AI sourcing, matching, screening, scheduling), Talent Management (internal mobility, career hub, succession, skills development), Talent Flex (contingent and gig workforce), Resource Management (project staffing, bench optimisation), and Talent Insights (workforce planning, skills-gap analytics, DEI) — all powered by a deep-learning global skills graph.
+8f's products: Talent Acquisition (AI sourcing, matching, screening, scheduling), Talent Management (internal mobility, career hub, succession, skills development), Talent Flex (contingent and gig workforce), Resource Management (project staffing, bench optimisation), and Talent Insights (workforce planning, skills-gap analytics, DEI) — all powered by a deep-learning global skills graph.
 
 Return this exact JSON structure:
 {
   "fastestGrowingBU": "Name the SPECIFIC fastest-growing BU at ${acc.companyName} with growth rate, revenue contribution. Must match their actual reported segments above.",
   "buGrowthDrivers": "What drives this BU's growth — cite specific ${new Date().getFullYear()} events, acquisitions, or launches. Connect to the key signals above.",
   "buTalentNeeds": "Specific roles, volumes, skill sets this BU needs. Reference their actual open roles (${acc.openRoles || "N/A"}) and hiring trends above.",
-  "phenomProductMatch": "Map 4-5 Eightfold products to their SPECIFIC challenges listed above: '[Product] → [Their challenge] → [Expected impact with numbers]'",
-  "phenomQuickWins": "3 things Eightfold delivers in FIRST 90 DAYS that directly address the challenges identified above.",
+  "phenomProductMatch": "Map 4-5 8f products to their SPECIFIC challenges listed above: '[Product] → [Their challenge] → [Expected impact with numbers]'",
+  "phenomQuickWins": "3 things 8f delivers in FIRST 90 DAYS that directly address the challenges identified above.",
   "phenomROIStory": "12-month ROI using actual numbers: ${acc.employees || "N"} employees, ${acc.openRoles || "N"} open roles. Specific $ amounts.",
   "wowInsights": "5 insights connecting dots across the intelligence above that the CHRO wouldn't expect: (1) recent event most missed, (2) competitive talent threat, (3) hidden cost, (4) urgency connection between initiatives, (5) 6-12 month prediction. Each 2-3 sentences with data.",
   "buLeaders": [
-    {"name": "Full name", "title": "Exact current title", "bu": "Business Unit name", "mandate": "Strategic mandate", "talentChallenge": "Hiring challenge", "phenomAngle": "How to position Eightfold", "linkedinUrl": ""},
+    {"name": "Full name", "title": "Exact current title", "bu": "Business Unit name", "mandate": "Strategic mandate", "talentChallenge": "Hiring challenge", "phenomAngle": "How to position 8f", "linkedinUrl": ""},
     {"name": "Second BU leader", "title": "Title", "bu": "BU", "mandate": "Mandate", "talentChallenge": "Challenge", "phenomAngle": "Angle", "linkedinUrl": ""},
     {"name": "Third leader", "title": "Title", "bu": "BU", "mandate": "Mandate", "talentChallenge": "Challenge", "phenomAngle": "Angle", "linkedinUrl": ""},
     {"name": "Procurement/Vendor leader", "title": "Title", "bu": "Procurement", "mandate": "Mandate", "talentChallenge": "How they evaluate HR tech", "phenomAngle": "Angle", "linkedinUrl": ""}
@@ -11450,7 +11450,7 @@ Return this exact JSON structure:
       // Company Intel (weight: 1 each)
       { f: "atAGlance", w: 1 }, { f: "coreBusiness", w: 1 }, { f: "revenue", w: 0.5 },
       { f: "ceoPriorities", w: 1 }, { f: "recentNews", w: 0.5 },
-      // Workforce (weight: 1.5 — core to Eightfold)
+      // Workforce (weight: 1.5 — core to 8f)
       { f: "workforceScale", w: 1.5 }, { f: "hiringShape", w: 1 }, { f: "criticalRoles", w: 1 },
       // People (weight: 2 — execs are critical)
       { f: "executives", w: 2, isArray: true, min: 2 },
@@ -11459,7 +11459,7 @@ Return this exact JSON structure:
       { f: "cioProblems", w: 1 }, { f: "chroProblems", w: 1 },
       { f: "whyNow", w: 1.5 }, { f: "highestOpportunity", w: 1 },
       { f: "outcomeStatement", w: 1.5 }, { f: "hyperCellTitle", w: 1 },
-      // BU Growth & Eightfold Match (weight: 1.5 — sales weapon)
+      // BU Growth & 8f Match (weight: 1.5 — sales weapon)
       { f: "fastestGrowingBU", w: 1.5 }, { f: "phenomProductMatch", w: 1.5 },
       { f: "wowInsights", w: 1 }, { f: "phenomQuickWins", w: 1 },
       { f: "buLeaders", w: 1.5, isArray: true, min: 2 },
@@ -12318,7 +12318,7 @@ Return this exact JSON structure:
           [
             ["name", "Full name", "e.g. Pascal Schumachers"],
             ["title", "Job title", "e.g. Strategic Account Executive"],
-            ["company", "Company", "e.g. Eightfold"],
+            ["company", "Company", "e.g. 8f"],
             ["phone", "Phone", "e.g. +49 …"],
             ["region", "Region / Territory", "e.g. Northern Europe"]
           ].map(function (fld) {
