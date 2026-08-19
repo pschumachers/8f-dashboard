@@ -4385,6 +4385,10 @@ function paragraphize(text) {
   if (!t) return "";
   if (t.indexOf("\n\n") !== -1) return t;
   t = t.replace(/\s*\n\s*/g, " ").replace(/[ \t]{2,}/g, " ");
+  var listSplit = t.replace(/\s*[;.:]\s+(?=(?:\(\d{1,2}\)|\d{1,2}[.\)])\s)/g, "\n\n");
+  if (listSplit.indexOf("\n\n") !== -1) {
+    return listSplit.split(/\n\n+/).map(function (s) { return s.trim(); }).filter(Boolean).join("\n\n");
+  }
   var marked = t.replace(/([.!?]["'\)\]]*)\s+(?=[A-Z(])/g, "$1\u0001");
   var parts = marked.split("\u0001").map(function (s) { return s.trim(); }).filter(Boolean);
   if (parts.length <= 2) return parts.join(" ");
@@ -10079,11 +10083,10 @@ function BULeadersSection({ account, update, claudeApiKey }) {
             ].map(function(f) {
               return React.createElement("div", { key: f.field },
                 React.createElement("div", { style: { fontSize: 10, fontWeight: 600, color: "#6B7280", marginBottom: 3, textTransform: "uppercase", letterSpacing: 0.5 } }, f.label),
-                React.createElement("textarea", {
+                React.createElement(TextArea, {
                   value: leader[f.field] || "",
-                  onChange: function(e) { updateLeaderField(idx, f.field, e.target.value); },
+                  onChange: function(v) { updateLeaderField(idx, f.field, v); },
                   placeholder: f.ph, rows: 2,
-                  style: { width: "100%", padding: "6px 10px", border: "1px solid " + C.border, borderRadius: 6, fontSize: 12, fontFamily: "inherit", boxSizing: "border-box", resize: "vertical", background: "#FAFBFF" },
                 }),
               );
             }),
@@ -10804,53 +10807,6 @@ function DashboardHome({ accounts, completionScore, selectAccount, setActiveSect
               );
             })
           ),
-      ),
-    ),
-
-    // ══════════════════════════════════════════════════════════
-    // ── ORG CHART — Project Teams by Department ──
-    // ══════════════════════════════════════════════════════════
-    React.createElement("div", { style: { background: "#fff", borderRadius: 12, border: "1px solid #E5E7EB", padding: 20, marginBottom: 16 } },
-      React.createElement("div", { style: { fontSize: 15, fontWeight: 700, color: "#1E293B", marginBottom: 4 } }, "\uD83C\uDFD7\uFE0F Project Teams \u2014 Org Chart"),
-      React.createElement("div", { style: { fontSize: 11, color: "#6B7280", marginBottom: 14 } }, "All mapped executives across accounts, grouped by department. Includes Procurement."),
-      // Department cards grid
-      React.createElement("div", { style: { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 12 } },
-        DEPT_ORDER.map(function(dept) {
-          var members = deptGroups[dept] || [];
-          var col = deptColor[dept] || "#6B7280";
-          return React.createElement("div", {
-            key: dept,
-            style: { border: "1px solid " + col + "30", borderRadius: 10, padding: 14, borderTop: "3px solid " + col, background: col + "05", minHeight: 80 },
-          },
-            React.createElement("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 } },
-              React.createElement("div", { style: { fontSize: 13, fontWeight: 700, color: col } }, dept),
-              React.createElement("div", { style: { fontSize: 11, fontWeight: 700, background: col + "20", color: col, padding: "2px 8px", borderRadius: 10 } }, members.length),
-            ),
-            members.length === 0
-              ? React.createElement("div", { style: { fontSize: 11, color: "#9CA3AF", fontStyle: "italic", padding: "8px 0" } }, "No members mapped yet")
-              : members.slice(0, 6).map(function(m, mi) {
-                return React.createElement("div", {
-                  key: mi,
-                  style: { display: "flex", alignItems: "center", gap: 8, padding: "5px 0", borderBottom: mi < Math.min(members.length, 6) - 1 ? "1px solid " + col + "15" : "none" },
-                },
-                  React.createElement("div", { style: { width: 24, height: 24, borderRadius: "50%", background: col + "20", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 700, color: col, flexShrink: 0 } },
-                    (m.name || "?").substring(0, 2).toUpperCase()
-                  ),
-                  React.createElement("div", { style: { flex: 1, minWidth: 0 } },
-                    React.createElement("div", { style: { fontSize: 12, fontWeight: 600, color: "#1E293B", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, m.name),
-                    React.createElement("div", { style: { fontSize: 10, color: "#6B7280", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } },
-                      (m.title || "") + " \u2022 " + m.companyName
-                    ),
-                  ),
-                  React.createElement("button", {
-                    onClick: function() { goToAccount(m.accountId, "executives", "talent"); },
-                    style: { fontSize: 9, padding: "2px 6px", border: "1px solid " + col + "40", borderRadius: 4, background: "#fff", cursor: "pointer", color: col, fontWeight: 600, flexShrink: 0 },
-                  }, "\u2192"),
-                );
-              }),
-            members.length > 6 && React.createElement("div", { style: { fontSize: 10, color: col, marginTop: 6, fontWeight: 600 } }, "+" + (members.length - 6) + " more"),
-          );
-        })
       ),
     ),
 
