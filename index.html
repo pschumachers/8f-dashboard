@@ -10491,7 +10491,74 @@ function DashboardHome({ accounts, completionScore, selectAccount, setActiveSect
     );
   };
 
+  // ── Pipeline roll-up (deal economics across the book) ──
+  var pipe = accounts.map(function(a) {
+    var sc = parseInt(a.oppScore, 10); if (isNaN(sc)) sc = null;
+    return { a: a, score: sc, lik: dealLikelihood(a), val: parseMoney(a.oppValue), proj: projectedCloseDate(a), fit: a.oppFit || "", timing: a.oppTiming || "" };
+  });
+  var inPlay = pipe.filter(function(d) { return d.score != null || d.lik > 0 || d.val != null || d.fit; });
+  var pipeTotalVal = 0, pipeValCount = 0, pipeExpVal = 0;
+  inPlay.forEach(function(d) { if (d.val != null) { pipeTotalVal += d.val; pipeValCount++; pipeExpVal += d.val * (d.lik / 100); } });
+  var pipeQualified = inPlay.filter(function(d) { return d.lik >= 60; }).length;
+  var pipeAvgLik = inPlay.length ? Math.round(inPlay.reduce(function(s, d) { return s + d.lik; }, 0) / inPlay.length) : 0;
+  var qMap = {};
+  inPlay.forEach(function(d) { if (d.proj) { var q = quarterLabel(d.proj); if (!qMap[q]) qMap[q] = { q: q, count: 0, sort: d.proj.getFullYear() * 4 + Math.floor(d.proj.getMonth() / 3), val: 0 }; qMap[q].count++; if (d.val != null) qMap[q].val += d.val; } });
+  var qList = Object.keys(qMap).map(function(k) { return qMap[k]; }).sort(function(a, b) { return a.sort - b.sort; });
+  var pipeSorted = inPlay.slice().sort(function(a, b) { return b.lik - a.lik; });
+  var likColOf = function(l) { return l >= 70 ? "#059669" : l >= 40 ? "#D97706" : "#94A3B8"; };
+  var pipeTile = function(label, value, color) {
+    return React.createElement("div", { style: { flex: "1 1 150px", minWidth: 140, background: C.card, border: "1px solid " + C.border, borderRadius: 10, padding: "12px 14px" } },
+      React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: C.muted, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 5 } }, label),
+      React.createElement("div", { style: { fontSize: 20, fontWeight: 800, color: color || C.text, lineHeight: 1.1 } }, value)
+    );
+  };
+
   return React.createElement("div", { style: { maxWidth: 960, margin: "0 auto" } },
+
+    // ── PIPELINE ROLL-UP ──
+    React.createElement("div", { style: { background: C.card, border: "1px solid " + C.border, borderRadius: 12, padding: 16, marginBottom: 16 } },
+      React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12, flexWrap: "wrap", gap: 8 } },
+        React.createElement("div", { style: { fontSize: 15, fontWeight: 800, color: C.text } }, "Pipeline"),
+        React.createElement("div", { style: { fontSize: 12, color: C.muted } }, inPlay.length + " deal" + (inPlay.length === 1 ? "" : "s") + " in play")
+      ),
+      React.createElement("div", { style: { display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 14 } },
+        pipeTile("Weighted pipeline", fmtMoney(pipeTotalVal), "#0F766E"),
+        pipeTile("Expected value", fmtMoney(pipeExpVal), "#059669"),
+        pipeTile("Qualified (60%+)", String(pipeQualified), "#0D9488"),
+        pipeTile("Avg likelihood", pipeAvgLik + "%", likColOf(pipeAvgLik))
+      ),
+      pipeValCount < inPlay.length ? React.createElement("div", { style: { fontSize: 11, color: C.muted, marginBottom: 12, fontStyle: "italic" } }, "Value shown for " + pipeValCount + " of " + inPlay.length + " deals; add a value in Opportunity Rating to include the rest.") : null,
+      qList.length ? React.createElement("div", { style: { marginBottom: 14 } },
+        React.createElement("div", { style: { fontSize: 11, fontWeight: 700, color: C.muted, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 6 } }, "Projected closes by quarter"),
+        React.createElement("div", { style: { display: "flex", gap: 8, flexWrap: "wrap" } },
+          qList.map(function(q) {
+            return React.createElement("div", { key: q.q, style: { border: "1px solid " + C.border, borderRadius: 8, padding: "6px 12px", fontSize: 12 } },
+              React.createElement("span", { style: { fontWeight: 800, color: C.text } }, q.q),
+              React.createElement("span", { style: { color: C.muted, marginLeft: 6 } }, q.count + " deal" + (q.count === 1 ? "" : "s") + (q.val ? " · " + fmtMoney(q.val) : ""))
+            );
+          })
+        )
+      ) : null,
+      inPlay.length ? React.createElement("div", null,
+        React.createElement("div", { style: { fontSize: 11, fontWeight: 700, color: C.muted, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 4 } }, "Deals by likelihood"),
+        pipeSorted.map(function(d) {
+          return React.createElement("div", { key: d.a.id, onClick: function() { goToAccount(d.a.id, "oppscore", "dealqual"); },
+            style: { display: "flex", alignItems: "center", gap: 8, padding: "9px 4px", borderBottom: "1px solid #F3F4F6", cursor: "pointer" } },
+            React.createElement("div", { style: { flex: 1, minWidth: 0 } },
+              React.createElement("div", { style: { fontSize: 13, fontWeight: 600, color: C.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, d.a.companyName),
+              React.createElement("div", { style: { fontSize: 11, color: C.muted, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, (d.fit || "Unrated") + (d.timing ? " · " + d.timing : "") + (d.proj ? " · " + fmtMonthYear(d.proj) : ""))
+            ),
+            React.createElement("div", { style: { fontSize: 12, fontWeight: 700, color: "#0F766E", minWidth: 48, textAlign: "right", whiteSpace: "nowrap", flexShrink: 0 } }, d.val != null ? fmtMoney(d.val) : "—"),
+            React.createElement("div", { style: { width: 48, flexShrink: 0 } },
+              React.createElement("div", { style: { height: 8, borderRadius: 5, background: "#F1F5F9", overflow: "hidden" } },
+                React.createElement("div", { style: { width: d.lik + "%", height: "100%", background: likColOf(d.lik), borderRadius: 5 } })
+              )
+            ),
+            React.createElement("div", { style: { fontSize: 12, fontWeight: 800, color: likColOf(d.lik), minWidth: 34, textAlign: "right", flexShrink: 0 } }, d.lik + "%")
+          );
+        })
+      ) : React.createElement("div", { style: { fontSize: 12, color: C.muted } }, "No deals scored yet. Set a fit, value and 7 Musts on an account to build the pipeline view."),
+    ),
 
     // ══════════════════════════════════════════════════════════
     // ── METRIC CARDS ROW (clickable to expand) ──
