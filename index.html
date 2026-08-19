@@ -7991,6 +7991,32 @@ function OutcomeFramingSection({ account, update }) {
     ),
   );
 }
+function CompellingEventSection({ account, update }) {
+  var extras = [
+    ["📅", "Deadline / Timeline", "compellingDeadline", "When does the clock run out? The specific date or window that forces a decision…"],
+    ["⚠️", "Cost of Waiting", "compellingCost", "What happens if they wait 6 to 12 months? Prolonged time to hire, attrition and lost productivity, compliance exposure, another cycle of poor internal mobility…"],
+  ];
+  return React.createElement(
+    "div",
+    null,
+    React.createElement(SectionHeader, { title: "Compelling Event", badge: "Why Now", badgeColor: "#DC2626" }),
+    React.createElement(
+      Card,
+      { style: { borderLeft: "4px solid #DC2626", background: "#FEF2F2" } },
+      React.createElement("div", { style: { fontSize: 13, fontWeight: 700, color: "#DC2626", marginBottom: 6 } }, "The Compelling Event"),
+      React.createElement("div", { style: { fontSize: 12, color: C.muted, marginBottom: 8, lineHeight: 1.5 } }, "The dated, external trigger that forces this company to act by a deadline. This is the clock — different from the Hyper-Cell, which is the value hook."),
+      React.createElement(TextArea, { value: account.compellingEvent, onChange: function (v) { update("compellingEvent", v); }, placeholder: "e.g. Workday HCM go-live; a post-merger workforce integration deadline; a hiring-freeze thaw with aggressive headcount targets; a board-mandated DEI or pay-transparency reporting deadline; annual talent-review cycle…", rows: 4 })
+    ),
+    extras.map(function (row) {
+      return React.createElement(
+        Card,
+        { key: row[2], style: { marginTop: 12 } },
+        React.createElement("div", { style: { fontSize: 13, fontWeight: 700, marginBottom: 8 } }, row[0] + " " + row[1]),
+        React.createElement(TextArea, { value: account[row[2]], onChange: function (v) { update(row[2], v); }, placeholder: row[3], rows: 3 })
+      );
+    })
+  );
+}
 function HyperCellSection({ account, update, claudeApiKey }) {
   const [enriching, setEnriching] = useState(false);
   const [enrichStatus, setEnrichStatus] = useState("");
@@ -10766,6 +10792,7 @@ const SUPER_SECTIONS = [
     { id: "usecases", label: "Use Cases" },
     { id: "challenges", label: "Challenges" },
     { id: "outcomes", label: "Outcomes" },
+    { id: "compelling", label: "Compelling Event" },
     { id: "hypercell", label: "Hyper-Cell" },
     { id: "proofpoints", label: "Proof Points" },
   ]},
@@ -12240,6 +12267,8 @@ Return this exact JSON structure:
             /*#__PURE__*/ React.createElement(BusinessChallengesSection, { account: account, update: update, claudeApiKey: claudeApiKey }),
           activeSection === "outcomes" &&
             /*#__PURE__*/ React.createElement(OutcomeFramingSection, { account: account, update: update }),
+          activeSection === "compelling" &&
+            /*#__PURE__*/ React.createElement(CompellingEventSection, { account: account, update: update }),
           activeSection === "hypercell" &&
             /*#__PURE__*/ React.createElement(HyperCellSection, { account: account, update: update, claudeApiKey: claudeApiKey }),
           activeSection === "geopolitics" &&
