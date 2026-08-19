@@ -134,6 +134,7 @@ const fetchWithRetry = async (url, options, maxRetries, statusCb) => {
 function mfaFriendlyError(err) {
   var code = err && err.code ? err.code : "";
   if (code === "auth/operation-not-allowed" || code === "auth/admin-restricted-operation") return "Two factor is not switched on for this project yet. Enable Multi factor authentication (TOTP) in the Firebase console first.";
+  if (code === "auth/unsupported-first-factor") return "This account cannot use two factor yet. Make sure the email is verified.";
   if (code === "auth/invalid-verification-code") return "That code is not right. Enter the current 6 digit code from your authenticator app.";
   if (code === "auth/requires-recent-login") return "For security, re-enter your password to continue.";
   return "\u274C " + (err && (err.message || err.code) ? (err.message || err.code) : "Something went wrong.");
