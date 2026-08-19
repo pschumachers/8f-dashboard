@@ -7085,6 +7085,7 @@ function ExecutiveMappingSection({ account, update, claudeApiKey }) {
     "HR Leadership": { bg: "#FCE7F3", text: "#DB2777", icon: "\uD83D\uDC65" },
     "IT / Digital": { bg: "#E0E7FF", text: "#4F46E5", icon: "\uD83D\uDCBB" },
     "Finance": { bg: "#FEE2E2", text: "#DC2626", icon: "\uD83D\uDCB0" },
+    "Executive Board": { bg: "#F1F5F9", text: "#334155", icon: "\uD83C\uDFDB\uFE0F" },
     "Other": { bg: C.bg, text: C.muted, icon: "\uD83D\uDC64" },
   };
 
@@ -7131,7 +7132,7 @@ If CONFIRMED still at company, return ONLY valid JSON (no markdown):
 
 {
   "title": "Their exact current title at ${account.companyName}",
-  "department": "One of: AI Strategy, Talent Management, Talent Acquisition, Workforce Management, HR Leadership, IT / Digital, Finance, Other",
+  "department": "One of: Executive Board, AI Strategy, Talent Management, Talent Acquisition, Workforce Management, HR Leadership, IT / Digital, Finance, Other. Put CEO, CFO, COO, CTO, CIO, CHRO and other top or managing board members under 'Executive Board'.",
   "roleType": "One of: Primary Sponsor, Key Influencer, Budget Authority, Tech Oversight, Compliance Gate, Integration Lead",
   "background": "VERIFIED: [LinkedIn/Xing/company website]. 2-3 sentence career background",
   "priorities": "Their top 3-4 stated priorities or focus areas",
@@ -10438,7 +10439,7 @@ function DashboardHome({ accounts, completionScore, selectAccount, setActiveSect
   });
 
   // Department groups for org chart
-  var DEPT_ORDER = ["HR Leadership", "Talent Acquisition", "Talent Management", "Workforce Management", "IT / Digital", "AI Strategy", "Finance", "Procurement", "Other"];
+  var DEPT_ORDER = ["HR Leadership", "Talent Acquisition", "Talent Management", "Workforce Management", "IT / Digital", "AI Strategy", "Finance", "Procurement", "Executive Board", "Other"];
   var deptGroups = {};
   DEPT_ORDER.forEach(function(d) { deptGroups[d] = []; });
   allExecs.forEach(function(e) {
@@ -10457,7 +10458,7 @@ function DashboardHome({ accounts, completionScore, selectAccount, setActiveSect
       (e.roleType || "").toLowerCase().includes(q);
   }).slice(0, 20) : [];
 
-  var deptColor = { "HR Leadership": "#7C3AED", "Talent Acquisition": "#3B82F6", "Talent Management": "#0D9488", "Workforce Management": "#F59E0B", "IT / Digital": "#DC2626", "AI Strategy": "#6366F1", "Finance": "#10B981", "Procurement": "#D97706", "Other": "#6B7280" };
+  var deptColor = { "HR Leadership": "#7C3AED", "Talent Acquisition": "#3B82F6", "Talent Management": "#0D9488", "Workforce Management": "#F59E0B", "IT / Digital": "#DC2626", "AI Strategy": "#6366F1", "Finance": "#10B981", "Procurement": "#D97706", "Executive Board": "#334155", "Other": "#6B7280" };
 
   // Helper: mini progress ring
   var miniRing = function(score, size) {
