@@ -20,6 +20,15 @@
     input, textarea, select { -webkit-user-select: text; user-select: text; }
     .tabs-strip::-webkit-scrollbar { display: none; }
     .tabs-strip { scrollbar-width: none; -ms-overflow-style: none; }
+    .drawer-actions { display: none; }
+    @media (max-width: 700px) {
+      .app-header { flex-wrap: wrap !important; row-gap: 6px; }
+      .app-header > * { flex-shrink: 0; }
+      .app-header-sub { display: none !important; }
+      .app-header-title { flex: 1 1 auto !important; min-width: 100px; max-width: none !important; }
+      .hdr-hide-mobile { display: none !important; }
+      .drawer-actions { display: block !important; }
+    }
   </style>
   <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
   <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
@@ -509,7 +518,7 @@ async function totpVerify(secretB32, input) {
   return false;
 }
 function totpRandomSecret() { var b = new Uint8Array(20); crypto.getRandomValues(b); return totpB32encode(b); }
-function totpOtpauthUrl(secretB32, email) { return "otpauth://totp/JAGGAER%20Dashboard:" + encodeURIComponent(email || "user") + "?secret=" + secretB32 + "&issuer=JAGGAER%20Dashboard&algorithm=SHA1&digits=6&period=30"; }
+function totpOtpauthUrl(secretB32, email) { return "otpauth://totp/Eightfold%20Dashboard:" + encodeURIComponent(email || "user") + "?secret=" + secretB32 + "&issuer=Eightfold%20Dashboard&algorithm=SHA1&digits=6&period=30"; }
 
 function TotpGate({ secret, onPass, onSignOut }) {
   var _c = useState(""); var code = _c[0]; var setCode = _c[1];
@@ -539,6 +548,75 @@ function TotpGate({ secret, onPass, onSignOut }) {
       )
     )
   );
+}
+
+function TwoFactorSection() {
+  var _f = useState(false); var enrolled = _f[0]; var setEnrolled = _f[1];
+  var _p = useState("idle"); var phase = _p[0]; var setPhase = _p[1];
+  var _s = useState(""); var secret = _s[0]; var setSecret = _s[1];
+  var _c = useState(""); var code = _c[0]; var setCode = _c[1];
+  var _m = useState(""); var msg = _m[0]; var setMsg = _m[1];
+  var qrRef = useRef(null);
+  function uid() { return (auth && auth.currentUser) ? auth.currentUser.uid : null; }
+  function email() { return (auth && auth.currentUser && auth.currentUser.email) || "user"; }
+  function refresh() { try { var u = uid(); if (db && u) { db.collection("users").doc(u).get().then(function (d) { setEnrolled(!!(d && d.exists && d.data() && d.data().totpSecret)); }).catch(function () {}); } } catch (e) {} }
+  useEffect(function () { refresh(); }, []);
+  function begin() {
+    setMsg("");
+    if (!uid()) { setMsg("Sign in first."); return; }
+    var sec = totpRandomSecret(); setSecret(sec); setCode(""); setPhase("showqr");
+    setTimeout(function () {
+      loadScript("https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js", "QRCode").then(function () {
+        if (qrRef.current && window.QRCode) { qrRef.current.innerHTML = ""; new window.QRCode(qrRef.current, { text: "otpauth://totp/Eightfold%20Dashboard:" + encodeURIComponent(email()) + "?secret=" + sec + "&issuer=Eightfold%20Dashboard&algorithm=SHA1&digits=6&period=30", width: 176, height: 176 }); }
+      }).catch(function () {});
+    }, 60);
+  }
+  async function confirmEnroll() {
+    setMsg("");
+    if (!/^[0-9]{6}$/.test((code || "").trim())) { setMsg("Enter the 6 digit code from your app."); return; }
+    setPhase("verifying");
+    var ok = false; try { ok = await totpVerify(secret, code.trim()); } catch (e) { ok = false; }
+    if (!ok) { setPhase("showqr"); setMsg("That code is not right. Check the clock on your phone and enter the current code."); return; }
+    try {
+      await db.collection("users").doc(uid()).set({ totpSecret: secret }, { merge: true });
+      if (typeof window !== "undefined") window.__totpVerified = true;
+      setSecret(""); setCode(""); setPhase("idle"); setEnrolled(true);
+      setMsg("✅ Two factor is on. You will be asked for a code next time you sign in.");
+    } catch (err) { setPhase("showqr"); setMsg("Could not save. " + (err && err.message ? err.message : "")); }
+  }
+  async function remove() {
+    setMsg("");
+    try {
+      var upd = {}; upd.totpSecret = firebase.firestore.FieldValue.delete();
+      await db.collection("users").doc(uid()).set(upd, { merge: true });
+      if (typeof window !== "undefined") window.__totpVerified = false;
+      setEnrolled(false); setMsg("Two factor removed.");
+    } catch (err) { setMsg("Could not remove. " + (err && err.message ? err.message : "")); }
+  }
+  var box = { fontSize: 13, fontFamily: "inherit" };
+  var children = [
+    React.createElement("div", { key: "h", style: { fontSize: 11, fontWeight: 700, color: C.muted, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 6, borderTop: "1px solid " + C.border, paddingTop: 16 } }, "Two factor authentication (TOTP)")
+  ];
+  if (enrolled) {
+    children.push(React.createElement("div", { key: "on", style: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, background: "#F0FDF4", border: "1px solid #BBF7D0", borderRadius: 8, padding: "10px 12px", marginBottom: 8 } },
+      React.createElement("div", { style: { fontSize: 12.5, color: "#166534", fontWeight: 600 } }, "✅ On. A 6 digit code is required at sign in."),
+      React.createElement("button", { onClick: remove, style: { padding: "6px 10px", borderRadius: 6, border: "1px solid " + C.border, background: C.card, color: "#DC2626", fontFamily: "inherit", fontSize: 12, fontWeight: 600, cursor: "pointer" } }, "Turn off")
+    ));
+  } else if (phase === "idle") {
+    children.push(React.createElement("div", { key: "intro", style: { fontSize: 12, color: C.muted, lineHeight: 1.5, marginBottom: 8 } }, "Add a second step at sign in using an authenticator app such as Google Authenticator or Authy. Works offline, no phone number needed."));
+    children.push(React.createElement("button", { key: "start", onClick: begin, style: { padding: "9px 16px", borderRadius: 6, border: "none", background: "#0D9488", color: "#fff", fontFamily: "inherit", fontSize: 13, fontWeight: 700, cursor: "pointer" } }, "Set up two factor"));
+  } else if (phase === "showqr" || phase === "verifying") {
+    children.push(React.createElement("div", { key: "step", style: { fontSize: 12, color: C.muted, lineHeight: 1.5, marginBottom: 8 } }, "Scan this in your authenticator app, or enter the key by hand, then type the 6 digit code it shows."));
+    children.push(React.createElement("div", { key: "qr", ref: qrRef, style: { display: "flex", justifyContent: "center", padding: 8, background: "#fff", borderRadius: 8, border: "1px solid " + C.border, marginBottom: 8, minHeight: 100 } }));
+    if (secret) children.push(React.createElement("div", { key: "key", style: { fontSize: 11, color: C.muted, marginBottom: 8, wordBreak: "break-all" } }, "Setup key: ", React.createElement("code", { style: { fontSize: 12, color: C.text } }, secret)));
+    children.push(React.createElement("input", { key: "code", type: "text", inputMode: "numeric", maxLength: 6, value: code, onChange: function (e) { setCode(e.target.value.replace(/[^0-9]/g, "")); }, placeholder: "6 digit code", style: { width: "100%", padding: "10px 12px", border: "1px solid " + C.border, borderRadius: 6, letterSpacing: 4, textAlign: "center", marginBottom: 8, boxSizing: "border-box", outline: "none", ...box } }));
+    children.push(React.createElement("div", { key: "acts", style: { display: "flex", gap: 8 } },
+      React.createElement("button", { onClick: confirmEnroll, disabled: phase === "verifying", style: { flex: 1, padding: "9px 16px", borderRadius: 6, border: "none", background: phase === "verifying" ? "#9CA3AF" : "#0D9488", color: "#fff", fontFamily: "inherit", fontSize: 13, fontWeight: 700, cursor: phase === "verifying" ? "not-allowed" : "pointer" } }, phase === "verifying" ? "Verifying…" : "Verify and turn on"),
+      React.createElement("button", { onClick: function () { setPhase("idle"); setSecret(""); setCode(""); setMsg(""); }, style: { padding: "9px 14px", borderRadius: 6, border: "1px solid " + C.border, background: C.card, color: C.muted, fontFamily: "inherit", fontSize: 13, fontWeight: 600, cursor: "pointer" } }, "Cancel")
+    ));
+  }
+  if (msg) children.push(React.createElement("div", { key: "msg", style: { fontSize: 12, fontWeight: 600, color: msg.indexOf("✅") === 0 ? "#059669" : C.text, marginTop: 8, lineHeight: 1.5 } }, msg));
+  return React.createElement("div", { style: { marginTop: 4, marginBottom: 8 } }, children);
 }
 
 function App() {
@@ -4501,6 +4579,34 @@ function MetricCard({ value, label, sub }) {
     sub && /*#__PURE__*/ React.createElement("div", { style: { fontSize: 12, color: C.teal, marginTop: 3, whiteSpace: "pre-wrap", lineHeight: 1.45, wordBreak: "break-word" } }, sub),
   );
 }
+function MetricField({ value, onChange, placeholder, fontSize, fontWeight, color, minRows, margin }) {
+  var _fs = React.useState(false);
+  var focused = _fs[0], setFocused = _fs[1];
+  var formatted = paragraphize(value || "");
+  var shown = focused ? (value || "") : formatted;
+  var lineCount = formatted ? formatted.split("\n").length : 1;
+  var autoRows = Math.max(minRows || 2, Math.min(24, lineCount + Math.ceil((formatted.length || 0) / 60)));
+  return /*#__PURE__*/ React.createElement("textarea", {
+    value: shown,
+    onChange: (e) => onChange(e.target.value),
+    placeholder: placeholder,
+    rows: autoRows,
+    style: { width: "100%", boxSizing: "border-box", border: "none", outline: "none", resize: "vertical", background: "transparent", fontFamily: "inherit", fontSize: fontSize, fontWeight: fontWeight, color: color, lineHeight: 1.5, whiteSpace: "pre-wrap", padding: 0, margin: margin || 0 },
+    onFocus: () => setFocused(true),
+    onBlur: () => setFocused(false),
+  });
+}
+function EditableMetricCard({ account, update, field, label, subField, subStatic, valuePlaceholder, subPlaceholder }) {
+  return /*#__PURE__*/ React.createElement(
+    "div",
+    { style: { background: C.card, border: `1px solid ${C.border}`, borderRadius: 10, padding: "12px 14px", flex: 1, minWidth: 160, textAlign: "left" } },
+    /*#__PURE__*/ React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: C.muted, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 5 } }, label),
+    /*#__PURE__*/ React.createElement(MetricField, { value: account[field] || "", onChange: (v) => update(field, v), placeholder: valuePlaceholder || "—", fontSize: 14, fontWeight: 600, color: C.blue, minRows: 2 }),
+    subField
+      ? /*#__PURE__*/ React.createElement(MetricField, { value: account[subField] || "", onChange: (v) => update(subField, v), placeholder: subPlaceholder || "", fontSize: 12, fontWeight: 500, color: C.teal, minRows: 1, margin: "3px 0 0" })
+      : (subStatic ? /*#__PURE__*/ React.createElement("div", { style: { fontSize: 12, color: C.teal, marginTop: 3 } }, subStatic) : null),
+  );
+}
 function TagInput({ tags, onChange, placeholder }) {
   const [input, setInput] = useState("");
   const add = () => {
@@ -6187,92 +6293,22 @@ function ExecutiveBriefSection({ account, update, claudeApiKey }) {
     /*#__PURE__*/ React.createElement(
       "div",
       { style: { display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 12 } },
-      /*#__PURE__*/ React.createElement(MetricCard, {
-        value: account.revenue,
-        label: "Annual Revenue",
-        sub: account.revenueGrowth,
+      /*#__PURE__*/ React.createElement(EditableMetricCard, {
+        account: account, update: update, field: "revenue", label: "Annual Revenue",
+        subField: "revenueGrowth", valuePlaceholder: "e.g. $9.71B", subPlaceholder: "e.g. +5% organic",
       }),
-      /*#__PURE__*/ React.createElement(MetricCard, {
-        value: account.employees,
-        label: "Employees",
-        sub: account.employeeGrowth,
+      /*#__PURE__*/ React.createElement(EditableMetricCard, {
+        account: account, update: update, field: "employees", label: "Employees",
+        subField: "employeeGrowth", valuePlaceholder: "e.g. 48,900", subPlaceholder: "e.g. +1.88%",
       }),
-      /*#__PURE__*/ React.createElement(MetricCard, {
-        value: account.openRoles,
-        label: "Open Roles",
-        sub: "Active Hiring",
+      /*#__PURE__*/ React.createElement(EditableMetricCard, {
+        account: account, update: update, field: "openRoles", label: "Open Roles",
+        subStatic: "Active Hiring", valuePlaceholder: "e.g. ~700",
       }),
-      /*#__PURE__*/ React.createElement(MetricCard, { value: account.glassdoorRating, label: "Glassdoor Rating" }),
-    ),
-    /*#__PURE__*/ React.createElement(
-      "div",
-      { style: { display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 12 } },
-      /*#__PURE__*/ React.createElement(
-        "div",
-        { style: { flex: "1 1 140px", minWidth: 140 } },
-        /*#__PURE__*/ React.createElement(FieldLabel, null, "Revenue (e.g. $9.71B)"),
-        /*#__PURE__*/ React.createElement(TextArea, {
-          rows: 2,
-          value: account.revenue,
-          onChange: (v) => update("revenue", v),
-          placeholder: "e.g. $9.71B",
-        }),
-      ),
-      /*#__PURE__*/ React.createElement(
-        "div",
-        { style: { flex: "1 1 140px", minWidth: 140 } },
-        /*#__PURE__*/ React.createElement(FieldLabel, null, "Revenue Growth YoY"),
-        /*#__PURE__*/ React.createElement(TextArea, {
-          rows: 2,
-          value: account.revenueGrowth,
-          onChange: (v) => update("revenueGrowth", v),
-          placeholder: "e.g. +5% organic",
-        }),
-      ),
-      /*#__PURE__*/ React.createElement(
-        "div",
-        { style: { flex: "1 1 140px", minWidth: 140 } },
-        /*#__PURE__*/ React.createElement(FieldLabel, null, "Employees"),
-        /*#__PURE__*/ React.createElement(TextArea, {
-          rows: 2,
-          value: account.employees,
-          onChange: (v) => update("employees", v),
-          placeholder: "e.g. 48,900",
-        }),
-      ),
-      /*#__PURE__*/ React.createElement(
-        "div",
-        { style: { flex: "1 1 140px", minWidth: 140 } },
-        /*#__PURE__*/ React.createElement(FieldLabel, null, "Employee Growth YoY"),
-        /*#__PURE__*/ React.createElement(TextArea, {
-          rows: 2,
-          value: account.employeeGrowth,
-          onChange: (v) => update("employeeGrowth", v),
-          placeholder: "e.g. +1.88%",
-        }),
-      ),
-      /*#__PURE__*/ React.createElement(
-        "div",
-        { style: { flex: "1 1 140px", minWidth: 140 } },
-        /*#__PURE__*/ React.createElement(FieldLabel, null, "Open Roles (approx.)"),
-        /*#__PURE__*/ React.createElement(TextArea, {
-          rows: 2,
-          value: account.openRoles,
-          onChange: (v) => update("openRoles", v),
-          placeholder: "e.g. ~700",
-        }),
-      ),
-      /*#__PURE__*/ React.createElement(
-        "div",
-        { style: { flex: "1 1 140px", minWidth: 140 } },
-        /*#__PURE__*/ React.createElement(FieldLabel, null, "Glassdoor Rating"),
-        /*#__PURE__*/ React.createElement(TextArea, {
-          rows: 2,
-          value: account.glassdoorRating,
-          onChange: (v) => update("glassdoorRating", v),
-          placeholder: "e.g. 3.9/5.0",
-        }),
-      ),
+      /*#__PURE__*/ React.createElement(EditableMetricCard, {
+        account: account, update: update, field: "glassdoorRating", label: "Glassdoor Rating",
+        valuePlaceholder: "e.g. 3.9/5.0",
+      }),
     ),
     /*#__PURE__*/ React.createElement(
       Card,
@@ -10207,6 +10243,117 @@ function SalesforceHistorySection({ account, update }) {
   );
 }
 
+function OnePagerSection({ account, setActiveSection, setActiveSuperSection }) {
+  var score = parseInt(account.oppScore, 10); if (isNaN(score)) score = null;
+  var lik = dealLikelihood(account);
+  var pd = projectedCloseDate(account);
+  var projStr = pd ? fmtMonthYear(pd) : "";
+  var parsed = parseMoney(account.oppValue);
+  var valStr = parsed != null ? fmtMoney(parsed) : (account.oppValue && account.oppValue.trim() ? account.oppValue.trim() : "—");
+  var compMust = normMusts(account.sevenMusts).competition.summary;
+  var stackTxt = (account.hrTechNotes || "").trim();
+  var whyNowTxt = account.compellingEvent || account.whyNow;
+  var compBody = (stackTxt ? "Currently using: " + stackTxt : "") + (compMust && compMust.trim() ? (stackTxt ? "\n\n" : "") + compMust.trim() : "");
+  var likCol = lik >= 70 ? "#059669" : lik >= 40 ? "#D97706" : "#DC2626";
+  var scoreCol = score == null ? C.muted : score >= 70 ? "#059669" : score >= 40 ? "#D97706" : "#DC2626";
+
+  var DEALQUAL_SECS = ["oppscore", "sevenmusts", "dealobjectives", "mutualplan"];
+  function jump(sec) { var sup = DEALQUAL_SECS.indexOf(sec) !== -1 ? "dealqual" : "opportunity"; setActiveSuperSection && setActiveSuperSection(sup); setActiveSection && setActiveSection(sec); }
+
+  function splitParas(s) {
+    if (!s) return [];
+    var t = String(s).replace(/\r/g, "").trim();
+    t = t.replace(/\s+(\d{1,2}[\.\)])\s+/g, "\n$1 ");
+    t = t.replace(/\s*•\s+/g, "\n• ");
+    var parts = t.split(/\n+/).map(function (x) { return x.trim(); }).filter(Boolean);
+    var out = [];
+    parts.forEach(function (p) {
+      var isList = /^(\d{1,2}[\.\)]|•)/.test(p);
+      if (!isList && p.length > 160) {
+        p.replace(/([.!?])\s+(?=[A-Z€$£"'])/g, "$1\n").split(/\n/).forEach(function (x) { x = x.trim(); if (x) out.push(x); });
+      } else { out.push(p); }
+    });
+    return out;
+  }
+  function esc(s) { return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+  function printPage() {
+    function sec(t, b) { b = (b || "").trim(); if (!b) return ""; var ps = splitParas(b).map(function (p) { return "<p>" + esc(p) + "</p>"; }).join(""); return "<div class='sec'><h3>" + esc(t) + "</h3>" + ps + "</div>"; }
+    var html = "<!doctype html><html><head><meta charset='utf-8'><title>" + esc(account.companyName || "Account") + " — Deal One-Pager</title>" +
+      "<style>body{font-family:-apple-system,Segoe UI,sans-serif;color:#111827;margin:34px;line-height:1.5}h1{font-size:24px;margin:0}" +
+      ".sub{color:#6B7280;font-size:13px;margin:3px 0 18px}.band{display:flex;gap:12px;margin:16px 0}" +
+      ".kpi{flex:1;border:1px solid #E5E7EB;border-radius:10px;padding:12px}.kpi .l{font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:#6B7280;font-weight:700}" +
+      ".kpi .v{font-size:20px;font-weight:800;color:#0F766E;margin-top:5px}.sec{margin:14px 0}.sec h3{font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:#6B7280;margin:0 0 4px}" +
+      ".sec p{margin:0 0 8px;font-size:13px;white-space:pre-wrap}.pill{display:inline-block;font-size:12px;font-weight:700;padding:4px 10px;border-radius:20px;background:#F1F5F9;margin-right:8px}" +
+      ".foot{margin-top:26px;border-top:1px solid #E5E7EB;padding-top:10px;color:#6B7280;font-size:10px;text-align:center}</style></head><body>" +
+      "<h1>" + esc(account.companyName || "Account") + "</h1>" +
+      "<div class='sub'>" + esc(account.industry || "") + (account.priority ? " · " + esc(account.priority) + " priority" : "") + " · Eightfold Talent Intelligence</div>" +
+      "<div>" + (account.oppFit ? "<span class='pill'>" + esc(account.oppFit) + "</span>" : "") + (account.oppTiming ? "<span class='pill'>" + esc(account.oppTiming) + "</span>" : "") + (account.salesCycle ? "<span class='pill'>" + esc(account.salesCycle) + " month cycle</span>" : "") + "</div>" +
+      "<div class='band'>" +
+      "<div class='kpi'><div class='l'>Opportunity score</div><div class='v'>" + (score != null ? score + " / 100" : "—") + "</div></div>" +
+      "<div class='kpi'><div class='l'>Deal likelihood</div><div class='v'>" + lik + "%</div></div>" +
+      "<div class='kpi'><div class='l'>Projected close</div><div class='v'>" + (projStr || "—") + "</div></div>" +
+      "<div class='kpi'><div class='l'>Est. value</div><div class='v'>" + esc(valStr) + "</div></div>" +
+      "</div>" +
+      sec("Why now — compelling event", whyNowTxt) +
+      sec("Why we win — hypothesis", account.hypothesis || account.leadNarrative) +
+      sec("Competition & who they use", compBody) +
+      sec("What has to be done to close", account.oppNextSteps) +
+      sec("Why this rating", account.oppRationale) +
+      "<div class='foot'>© 2026 Pascal Schumachers. All rights reserved. Confidential. AI-assisted intel, verify figures before use.</div></body></html>";
+    var w = window.open("", "_blank"); if (!w) { alert("Please allow pop-ups to print the one-pager."); return; }
+    w.document.write(html); w.document.close(); w.focus(); setTimeout(function () { try { w.print(); } catch (e) {} }, 400);
+  }
+
+  function tile(label, value, color) {
+    return React.createElement("div", { style: { flex: "1 1 150px", minWidth: 150, background: C.card, border: "1px solid " + C.border, borderRadius: 10, padding: "12px 14px" } },
+      React.createElement("div", { style: { fontSize: 10, fontWeight: 700, color: C.muted, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 5 } }, label),
+      React.createElement("div", { style: { fontSize: 22, fontWeight: 800, color: color || C.text, lineHeight: 1.1 } }, value)
+    );
+  }
+  function pill(text, col) {
+    if (!text) return null;
+    return React.createElement("span", { style: { display: "inline-block", fontSize: 12, fontWeight: 700, padding: "5px 12px", borderRadius: 20, background: (col || C.muted) + "22", color: col || C.muted, marginRight: 8, marginBottom: 6 } }, text);
+  }
+  function card(title, body, openSec) {
+    var txt = (body || "").trim();
+    return React.createElement("div", { style: { background: C.card, border: "1px solid " + C.border, borderRadius: 10, padding: "14px 16px", marginBottom: 10 } },
+      React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 } },
+        React.createElement("div", { style: { fontSize: 11, fontWeight: 700, color: C.muted, textTransform: "uppercase", letterSpacing: 0.5 } }, title),
+        openSec ? React.createElement("button", { onClick: function () { jump(openSec); }, style: { background: "none", border: "none", color: C.teal, fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" } }, "Open ›") : null
+      ),
+      txt
+        ? React.createElement("div", { style: { fontSize: 13, color: C.text, lineHeight: 1.55 } },
+            splitParas(txt).map(function (p, i) { return React.createElement("div", { key: i, style: { marginBottom: 8 } }, p); }))
+        : React.createElement("div", { style: { fontSize: 13, color: C.muted, lineHeight: 1.55 } }, "Not captured yet")
+    );
+  }
+
+  return React.createElement("div", { style: { maxWidth: 900, margin: "0 auto" } },
+    React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12, marginBottom: 14 } },
+      React.createElement("div", null,
+        React.createElement("div", { style: { fontSize: 24, fontWeight: 800, color: C.text, lineHeight: 1.1 } }, account.companyName || "Account"),
+        React.createElement("div", { style: { fontSize: 13, color: C.muted, marginTop: 3 } }, (account.industry || "No industry") + (account.priority ? " · " + account.priority + " priority" : "") + " · Eightfold Talent Intelligence")
+      ),
+      React.createElement("button", { onClick: printPage, style: { padding: "9px 16px", borderRadius: 8, border: "1px solid " + C.border, background: C.card, color: C.text, fontFamily: "inherit", fontSize: 13, fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap" } }, "🖨 Print / Save as PDF")
+    ),
+    React.createElement("div", { style: { marginBottom: 10 } },
+      pill(account.oppFit, "#059669"), pill(account.oppTiming, "#0D9488"), pill(account.salesCycle ? account.salesCycle + " month cycle" : "", "#6366F1")
+    ),
+    React.createElement("div", { style: { display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 14 } },
+      tile("Opportunity score", score != null ? score + " / 100" : "—", scoreCol),
+      tile("Deal likelihood", lik + "%", likCol),
+      tile("Projected close", projStr || "—", projStr ? "#059669" : C.muted),
+      tile("Est. value", valStr, "#0F766E")
+    ),
+    card("Why now — compelling event", whyNowTxt, "problems"),
+    card("Why we win — hypothesis", account.hypothesis || account.leadNarrative, "oppscore"),
+    card("Competition & who they use", compBody, "sevenmusts"),
+    card("What has to be done to close", account.oppNextSteps, "oppscore"),
+    card("Why this rating", account.oppRationale, "oppscore"),
+    React.createElement("div", { style: { fontSize: 11, color: C.muted, marginTop: 8, lineHeight: 1.5, fontStyle: "italic" } }, "This one-pager rolls up the account's live intelligence. Figures are AI-assisted, verify before quoting. Open any card to edit the source data.")
+  );
+}
+
 function DashboardHome({ accounts, completionScore, selectAccount, setActiveSection, setActiveSuperSection, setDrawerOpen, updateAccount }) {
   var _useState = useState(null), expandedCard = _useState[0], setExpandedCard = _useState[1];
   var _useState2 = useState(null), expandedStage = _useState2[0], setExpandedStage = _useState2[1];
@@ -10593,6 +10740,7 @@ function DashboardHome({ accounts, completionScore, selectAccount, setActiveSect
 // ─── Main Dashboard ────────────────────────────────────────────────────────────
 const SUPER_SECTIONS = [
   { id: "dashboard", label: "Dashboard", icon: "\uD83D\uDCCA", children: [] },
+  { id: "onepager", label: "One-Pager", icon: "\uD83D\uDCC4", children: [] },
   { id: "company", label: "Company Intel", icon: "\uD83C\uDFE2", children: [
     { id: "brief", label: "Executive Brief" },
     { id: "fundamentals", label: "Fundamentals" },
@@ -10627,6 +10775,7 @@ const SUPER_SECTIONS = [
     { id: "transcripts", label: "Transcripts" },
   ]},
   { id: "analysis", label: "Market Analysis", icon: "\uD83D\uDCC8", children: [] },
+  { id: "help", label: "Help", icon: "\u2753", children: [] },
 ];
 // Flat list for backwards compat
 const SECTIONS = SUPER_SECTIONS.flatMap(s => s.children.length > 0 ? s.children : [{ id: s.id, label: s.label, icon: s.icon }]);
@@ -10651,6 +10800,47 @@ function ProspectDashboard() {
     try { return localStorage.getItem("prospect_claude_api_key") || ""; } catch(e) { return ""; }
   });
   const [showApiKeyModal, setShowApiKeyModal] = useState(false);
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [profileForm, setProfileForm] = useState({ name: "", title: "", company: "", phone: "", region: "" });
+  const [profileNewPw, setProfileNewPw] = useState("");
+  const [profileMsg, setProfileMsg] = useState("");
+  const setProfileField = (k, v) => setProfileForm((prev) => Object.assign({}, prev, { [k]: v }));
+  const openProfile = () => {
+    setProfileNewPw(""); setProfileMsg("");
+    var base = { name: (auth && auth.currentUser && auth.currentUser.displayName) || "", title: "", company: "", phone: "", region: "" };
+    setProfileForm(base);
+    setShowProfileModal(true);
+    try {
+      if (db && auth && auth.currentUser) {
+        db.collection("users").doc(auth.currentUser.uid).get().then(function (doc) {
+          if (doc && doc.exists && doc.data() && doc.data().profile) { setProfileForm(Object.assign({}, base, doc.data().profile)); }
+        }).catch(function () {});
+      }
+    } catch (e) {}
+  };
+  const saveProfile = () => {
+    if (!(auth && auth.currentUser)) { setProfileMsg("Sign in to save your profile."); return; }
+    var f = profileForm;
+    try { if (db) db.collection("users").doc(auth.currentUser.uid).set({ profile: f }, { merge: true }).catch(function () {}); } catch (e) {}
+    auth.currentUser.updateProfile({ displayName: (f.name || "").trim() })
+      .then(() => { setProfileMsg("✅ Profile saved."); })
+      .catch((e) => setProfileMsg("❌ " + (e && e.message ? e.message : "Could not save profile.")));
+  };
+  const changePassword = () => {
+    if (!(auth && auth.currentUser)) { setProfileMsg("Sign in first."); return; }
+    if (!profileNewPw || profileNewPw.length < 6) { setProfileMsg("Password must be at least 6 characters."); return; }
+    auth.currentUser.updatePassword(profileNewPw)
+      .then(() => { setProfileMsg("✅ Password updated."); setProfileNewPw(""); })
+      .catch((e) => {
+        if (e && e.code === "auth/requires-recent-login") { setProfileMsg("For security, sign out and back in, then try again, or use the reset email button."); }
+        else { setProfileMsg("❌ " + (e && e.message ? e.message : "Could not update password.")); }
+      });
+  };
+  const sendResetEmail = () => {
+    var em = auth && auth.currentUser && auth.currentUser.email;
+    if (em) { auth.sendPasswordResetEmail(em).then(() => setProfileMsg("✅ Reset email sent to " + em + ".")).catch((e) => setProfileMsg("❌ " + e.message)); }
+    else { setProfileMsg("No email on file."); }
+  };
   const [showAddAccountModal, setShowAddAccountModal] = useState(false);
   const [showRefreshIntelModal, setShowRefreshIntelModal] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -11350,7 +11540,42 @@ Return this exact JSON structure:
       ),
       /*#__PURE__*/ React.createElement(
         "div",
+        { style: { padding: "10px 10px", borderBottom: "1px solid #2D3448", maxHeight: "45vh", overflowY: "auto" } },
+        /*#__PURE__*/ React.createElement("div", { style: { color: "#8892A4", fontSize: 10, fontWeight: 700, letterSpacing: 0.5, textTransform: "uppercase", padding: "0 6px 6px" } }, "Menu"),
+        SUPER_SECTIONS.filter(function (s) { return ["dashboard", "analysis", "help"].indexOf(s.id) !== -1; }).map(function (ss) {
+          var activeSuper = activeSuperSection === ss.id;
+          return /*#__PURE__*/ React.createElement("button", {
+            key: ss.id,
+            onClick: function () { setActiveSuperSection(ss.id); setActiveSection(ss.children.length > 0 ? ss.children[0].id : ss.id); setDrawerOpen(false); },
+            style: { display: "flex", alignItems: "center", gap: 8, width: "100%", textAlign: "left", padding: "9px 10px", borderRadius: 8, border: "none", cursor: "pointer", fontFamily: "inherit", fontSize: 14, fontWeight: activeSuper ? 700 : 500, background: activeSuper ? "#2D3448" : "transparent", color: activeSuper ? "#fff" : "#C9D1DC", marginBottom: 2 },
+          }, ss.icon + "  " + ss.label);
+        })
+      ),
+      /*#__PURE__*/ React.createElement(
+        "div",
+        { className: "drawer-actions", style: { padding: "10px 10px", borderBottom: "1px solid #2D3448" } },
+        /*#__PURE__*/ React.createElement("div", { style: { color: "#8892A4", fontSize: 10, fontWeight: 700, letterSpacing: 0.5, textTransform: "uppercase", padding: "0 6px 6px" } }, "Actions"),
+        /*#__PURE__*/ React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 8, padding: "4px 6px 8px" } },
+          /*#__PURE__*/ React.createElement("span", { style: { color: "#8892A4", fontSize: 13 } }, "\ud83d\udce4 Export"),
+          /*#__PURE__*/ React.createElement(ExportMenu, { account: account })
+        ),
+        /*#__PURE__*/ React.createElement("button", {
+          onClick: function () { saveToCloud(accounts); setDrawerOpen(false); },
+          style: { display: "flex", alignItems: "center", gap: 8, width: "100%", textAlign: "left", padding: "9px 10px", borderRadius: 8, border: "none", cursor: "pointer", fontFamily: "inherit", fontSize: 14, fontWeight: 500, background: "transparent", color: "#C9D1DC", marginBottom: 2 },
+        }, "\ud83d\udcbe  Save to cloud"),
+        /*#__PURE__*/ React.createElement("button", {
+          onClick: function () { openProfile(); setDrawerOpen(false); },
+          style: { display: "flex", alignItems: "center", gap: 8, width: "100%", textAlign: "left", padding: "9px 10px", borderRadius: 8, border: "none", cursor: "pointer", fontFamily: "inherit", fontSize: 14, fontWeight: 500, background: "transparent", color: "#C9D1DC", marginBottom: 2 },
+        }, "\ud83d\udc64  My profile"),
+        /*#__PURE__*/ React.createElement("button", {
+          onClick: function () { setShowApiKeyModal(true); setDrawerOpen(false); },
+          style: { display: "flex", alignItems: "center", gap: 8, width: "100%", textAlign: "left", padding: "9px 10px", borderRadius: 8, border: "none", cursor: "pointer", fontFamily: "inherit", fontSize: 14, fontWeight: 500, background: "transparent", color: "#C9D1DC", marginBottom: 2 },
+        }, "\ud83d\udd11  API key")
+      ),
+      /*#__PURE__*/ React.createElement(
+        "div",
         { style: { padding: "12px 16px", borderBottom: "1px solid #2D3448" } },
+        /*#__PURE__*/ React.createElement("div", { style: { color: "#8892A4", fontSize: 10, fontWeight: 700, letterSpacing: 0.5, textTransform: "uppercase", marginBottom: 8 } }, "Accounts"),
         /*#__PURE__*/ React.createElement("input", {
           value: searchTerm,
           onChange: (e) => setSearchTerm(e.target.value),
@@ -11551,6 +11776,7 @@ Return this exact JSON structure:
       /*#__PURE__*/ React.createElement(
         "div",
         {
+          className: "app-header",
           style: {
             background: C.card,
             borderBottom: `1px solid ${C.border}`,
@@ -11587,7 +11813,7 @@ Return this exact JSON structure:
         ),
         /*#__PURE__*/ React.createElement(
           "div",
-          { style: { flex: 1, minWidth: 0 } },
+          { className: "app-header-title", style: { flex: 1, minWidth: 0 } },
           /*#__PURE__*/ React.createElement(
             "div",
             { style: { display: "flex", alignItems: "center", gap: 6, minWidth: 0 } },
@@ -11603,9 +11829,9 @@ Return this exact JSON structure:
                   textOverflow: "ellipsis",
                 },
               },
-              account.companyName || "Select Account",
+              activeSection === "dashboard" ? "Dashboard" : activeSection === "help" ? "Help" : activeSection === "analysis" ? "Market Analysis" : (account.companyName || "Select Account"),
             ),
-            account.companyName && /*#__PURE__*/ React.createElement(
+            activeSection !== "dashboard" && activeSection !== "help" && activeSection !== "analysis" && account.companyName && /*#__PURE__*/ React.createElement(
               "button",
               {
                 onClick: function () {
@@ -11625,9 +11851,9 @@ Return this exact JSON structure:
               "\u270F\uFE0F",
             ),
           ),
-          /*#__PURE__*/ React.createElement(
+          activeSection !== "dashboard" && activeSection !== "help" && activeSection !== "analysis" && /*#__PURE__*/ React.createElement(
             "div",
-            { style: { display: "flex", gap: 6, alignItems: "center", marginTop: 2 } },
+            { className: "app-header-sub", style: { display: "flex", gap: 6, alignItems: "center", marginTop: 2 } },
             /*#__PURE__*/ React.createElement(
               "span",
               {
@@ -11650,8 +11876,8 @@ Return this exact JSON structure:
             /*#__PURE__*/ React.createElement("span", { style: { fontSize: 10, color: C.muted } }, account.industry),
           ),
         ),
-        /*#__PURE__*/ React.createElement(ExportMenu, { account: account }),
-        /*#__PURE__*/ React.createElement(
+        /*#__PURE__*/ React.createElement("span", { className: "hdr-hide-mobile", style: { display: "flex", alignItems: "center" } }, /*#__PURE__*/ React.createElement(ExportMenu, { account: account })),
+        false && /*#__PURE__*/ React.createElement(
           "button",
           {
             onClick: () => setHeaderCollapsed(!headerCollapsed),
@@ -11698,6 +11924,27 @@ Return this exact JSON structure:
         /*#__PURE__*/ React.createElement(
           "button",
           {
+            onClick: () => { setActiveSuperSection("help"); setActiveSection("help"); },
+            title: "Help & documentation",
+            style: {
+              background: "none",
+              border: "1px solid #E5E7EB",
+              borderRadius: 6,
+              color: C.muted,
+              cursor: "pointer",
+              fontSize: 11,
+              padding: "5px 10px",
+              fontFamily: "inherit",
+              minHeight: 36,
+              whiteSpace: "nowrap",
+            },
+          },
+          "\u2753 Help",
+        ),
+        /*#__PURE__*/ React.createElement(
+          "button",
+          {
+            className: "hdr-hide-mobile",
             onClick: () => setShowApiKeyModal(true),
             title: "Set Claude API Key",
             style: {
@@ -11716,6 +11963,7 @@ Return this exact JSON structure:
           "\uD83D\uDD11 API Key",
         ),
         /*#__PURE__*/ React.createElement("span", {
+          className: "hdr-hide-mobile",
           title: syncStatus === "error" ? "Sync error: " + saveError + " (click to retry)" : syncStatus === "saving" ? "Saving to cloud..." : syncStatus === "synced" ? "Synced to cloud" : syncStatus === "loading" ? "Loading..." : "Saved locally only (sign in for cloud sync)",
           style: { fontSize: 14, padding: "5px 4px", opacity: syncStatus === "saving" ? 0.5 : 1, transition: "opacity 0.3s", cursor: syncStatus === "error" ? "pointer" : "default" },
           onClick: syncStatus === "error" ? () => { setSaveError(""); saveToCloud(accounts); } : undefined,
@@ -11723,6 +11971,7 @@ Return this exact JSON structure:
         /*#__PURE__*/ React.createElement(
           "button",
           {
+            className: "hdr-hide-mobile",
             onClick: () => { saveToCloud(accounts); },
             title: "Save all data to cloud now",
             style: {
@@ -11748,6 +11997,27 @@ Return this exact JSON structure:
         /*#__PURE__*/ React.createElement(
           "button",
           {
+            className: "hdr-hide-mobile",
+            onClick: openProfile,
+            title: "My profile",
+            style: {
+              background: "none",
+              border: "1px solid #E5E7EB",
+              borderRadius: 6,
+              color: C.muted,
+              cursor: "pointer",
+              fontSize: 11,
+              padding: "5px 10px",
+              fontFamily: "inherit",
+              minHeight: 36,
+              whiteSpace: "nowrap",
+            },
+          },
+          "👤 Profile",
+        ),
+        /*#__PURE__*/ React.createElement(
+          "button",
+          {
             onClick: () => {
               if (auth) auth.signOut();
               else window.location.reload();
@@ -11769,7 +12039,7 @@ Return this exact JSON structure:
           "Sign Out",
         ),
       ),
-    account && !headerCollapsed &&
+    false &&
       /*#__PURE__*/ React.createElement(
         "div",
         {
@@ -11809,8 +12079,8 @@ Return this exact JSON structure:
           }),
         ),
       ),
-    // ── Super-section tabs (top level) ──
-    /*#__PURE__*/ React.createElement(
+    // ── Super-section tabs: header on account/analysis views; hidden on the clean Dashboard and Help ──
+    activeSection !== "dashboard" && activeSection !== "help" && /*#__PURE__*/ React.createElement(
       "div",
       {
         style: {
@@ -11826,7 +12096,10 @@ Return this exact JSON structure:
       /*#__PURE__*/ React.createElement(
         "div",
         { style: { display: "flex", padding: "0 8px", minWidth: "max-content" } },
-        SUPER_SECTIONS.map((ss) =>
+        (["dashboard", "analysis", "help"].indexOf(activeSection) !== -1
+          ? SUPER_SECTIONS.filter((s) => s.id === "analysis")
+          : SUPER_SECTIONS.filter((s) => s.id !== "dashboard" && s.id !== "help")
+        ).map((ss) =>
           /*#__PURE__*/ React.createElement(
             "button",
             {
@@ -11922,11 +12195,15 @@ Return this exact JSON structure:
           setAccounts(function(prev) { return prev.map(function(a) { return a.id === accId ? { ...a, [field]: value } : a; }); });
         },
       }),
+      // ── Help screen (no account needed) ──
+      activeSection === "help" && /*#__PURE__*/ React.createElement(HelpSection, null),
       // ── Section content ──
-      account && activeSection !== "dashboard" &&
+      account && activeSection !== "dashboard" && activeSection !== "help" &&
         /*#__PURE__*/ React.createElement(
           React.Fragment,
           null,
+          activeSection === "onepager" &&
+            /*#__PURE__*/ React.createElement(OnePagerSection, { account: account, setActiveSection: setActiveSection, setActiveSuperSection: setActiveSuperSection }),
           activeSection === "brief" &&
             /*#__PURE__*/ React.createElement(ExecutiveBriefSection, { account: account, update: update, claudeApiKey: claudeApiKey }),
           activeSection === "fundamentals" &&
@@ -11991,6 +12268,64 @@ Return this exact JSON structure:
             }),
         ),
     ),
+    showProfileModal &&
+      /*#__PURE__*/ React.createElement(
+        "div",
+        {
+          onClick: () => setShowProfileModal(false),
+          style: { position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 2000, padding: 20, fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" },
+        },
+        /*#__PURE__*/ React.createElement(
+          "div",
+          {
+            onClick: (e) => e.stopPropagation(),
+            style: { background: C.card, borderRadius: 12, border: `1px solid ${C.border}`, padding: 24, maxWidth: 420, width: "100%", boxShadow: "0 20px 60px rgba(0,0,0,0.3)", maxHeight: "85vh", overflowY: "auto" },
+          },
+          /*#__PURE__*/ React.createElement("div", { style: { fontSize: 16, fontWeight: 700, color: C.text, marginBottom: 4 } }, "👤 My profile"),
+          /*#__PURE__*/ React.createElement("div", { style: { fontSize: 12, color: C.muted, marginBottom: 16 } }, (auth && auth.currentUser && auth.currentUser.email) ? "Signed in as " + auth.currentUser.email : "Signed in"),
+          [
+            ["name", "Full name", "e.g. Pascal Schumachers"],
+            ["title", "Job title", "e.g. Strategic Account Executive"],
+            ["company", "Company", "e.g. Eightfold"],
+            ["phone", "Phone", "e.g. +49 …"],
+            ["region", "Region / Territory", "e.g. Northern Europe"]
+          ].map(function (fld) {
+            return /*#__PURE__*/ React.createElement("div", { key: fld[0], style: { marginBottom: 10 } },
+              /*#__PURE__*/ React.createElement("div", { style: { fontSize: 11, fontWeight: 700, color: C.muted, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 5 } }, fld[1]),
+              /*#__PURE__*/ React.createElement("input", {
+                type: "text", value: profileForm[fld[0]] || "", onChange: (e) => setProfileField(fld[0], e.target.value), placeholder: fld[2],
+                style: { width: "100%", padding: "10px 12px", border: `1px solid ${C.border}`, borderRadius: 6, fontSize: 13, fontFamily: "inherit", boxSizing: "border-box", outline: "none" },
+              })
+            );
+          }),
+          /*#__PURE__*/ React.createElement("button", {
+            onClick: saveProfile,
+            style: { padding: "9px 16px", borderRadius: 6, border: "none", background: "#0D9488", color: "#fff", fontFamily: "inherit", fontSize: 13, fontWeight: 700, cursor: "pointer", marginTop: 4, marginBottom: 20 },
+          }, "Save profile"),
+          /*#__PURE__*/ React.createElement("div", { style: { fontSize: 11, fontWeight: 700, color: C.muted, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 6, borderTop: `1px solid ${C.border}`, paddingTop: 16 } }, "Change password"),
+          /*#__PURE__*/ React.createElement("input", {
+            type: "password", value: profileNewPw, onChange: (e) => setProfileNewPw(e.target.value), placeholder: "New password (min 6 characters)",
+            style: { width: "100%", padding: "10px 12px", border: `1px solid ${C.border}`, borderRadius: 6, fontSize: 13, fontFamily: "inherit", marginBottom: 8, boxSizing: "border-box", outline: "none" },
+          }),
+          /*#__PURE__*/ React.createElement("div", { style: { display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 8 } },
+            /*#__PURE__*/ React.createElement("button", {
+              onClick: changePassword,
+              style: { padding: "8px 14px", borderRadius: 6, border: "none", background: "#0D9488", color: "#fff", fontFamily: "inherit", fontSize: 13, fontWeight: 700, cursor: "pointer" },
+            }, "Update password"),
+            /*#__PURE__*/ React.createElement("button", {
+              onClick: sendResetEmail,
+              style: { padding: "8px 14px", borderRadius: 6, border: `1px solid ${C.border}`, background: C.card, color: C.text, fontFamily: "inherit", fontSize: 13, fontWeight: 600, cursor: "pointer" },
+            }, "Email me a reset link")
+          ),
+          /*#__PURE__*/ React.createElement("div", { style: { fontSize: 11, color: C.muted, lineHeight: 1.5, marginBottom: profileMsg ? 8 : 0 } }, "You type your own new password; it is sent straight to the secure auth service and never stored in the dashboard."),
+          profileMsg && /*#__PURE__*/ React.createElement("div", { style: { fontSize: 12, fontWeight: 600, color: profileMsg.indexOf("✅") === 0 ? "#059669" : C.text, marginTop: 4 } }, profileMsg),
+          /*#__PURE__*/ React.createElement(TwoFactorSection, null),
+          /*#__PURE__*/ React.createElement("button", {
+            onClick: () => setShowProfileModal(false),
+            style: { marginTop: 18, width: "100%", padding: "10px", borderRadius: 8, border: `1px solid ${C.border}`, background: C.card, color: C.muted, fontFamily: "inherit", fontSize: 13, fontWeight: 600, cursor: "pointer" },
+          }, "Close")
+        )
+      ),
     showApiKeyModal &&
       /*#__PURE__*/ React.createElement(
         "div",
